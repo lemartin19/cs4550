@@ -1,0 +1,14 @@
+server {
+	listen 80;
+	listen [::]:80;
+
+	root /home/lynnsey/www/seablue.site;
+
+	index index.html;
+
+	server_name seablue.site www.seablue.site;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
