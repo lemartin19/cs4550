@@ -1,0 +1,43 @@
+Please fill in answers to the questions below:
+
+
+1. What's your name?
+Lynnsey Martin
+
+2. What hostname did you deploy to?
+seablue.site
+
+3. What's the link to your repository on github with your code?
+https://github.com/lemartin19/cs4550
+
+4. How many HTML / CSS tutorial exercises did you do?
+0
+
+5. How comfortable do you feel with HTML and CSS now?
+Very
+
+6. How many JS tutorial exercises did you do?
+0
+
+7. How comfortable do you feel with JS now?
+Very
+
+8. Do all of your HTML pages pass the W3C HTML validator?
+(https://validator.w3.org/)
+Yes
+
+9. Which parts of this assignment did you have trouble with, if any?
+None
+
+
+
+
+And here's a list of tasks for grading comments. Just leave this here:
+ - Task 1
+ - Task 2
+ - Task 3
+ - Task 4
+ - Task 5
+ - Task 6
+ - Task 7
+ - Task 8
