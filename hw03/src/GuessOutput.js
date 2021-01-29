@@ -1,4 +1,7 @@
 import './GuessOutput.css';
+
+import React from 'react';
+import PropTypes from 'prop-types';
 import CowsAndBulls from './CowsAndBulls';
 
 const GuessesLeft = ({ guess, secret, lives }) => {
@@ -10,6 +13,11 @@ const GuessesLeft = ({ guess, secret, lives }) => {
   return <div>You lose! Restart the game to continue playing.</div>;
 };
 GuessesLeft.displayName = 'GuessesLeft';
+GuessesLeft.propTypes = {
+  guess: PropTypes.string.isRequired,
+  lives: PropTypes.number.isRequired,
+  secret: PropTypes.string,
+};
 
 const GuessOutput = ({ guess, secret, lives }) => {
   return (
@@ -20,5 +28,10 @@ const GuessOutput = ({ guess, secret, lives }) => {
   );
 };
 GuessOutput.displayName = 'GuessOutput';
+GuessOutput.propTypes = {
+  guess: PropTypes.string.isRequired,
+  lives: PropTypes.number.isRequired,
+  secret: PropTypes.string,
+};
 
 export default GuessOutput;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 import './App.css';
 import GuessInput from './GuessInput';
@@ -18,7 +19,6 @@ const useApp = () => {
 
   useEffect(() => {
     setSecret(generateSecret());
-    console.log('setting up the game');
   }, []);
 
   const resetGame = useCallback(() => {
@@ -30,9 +30,6 @@ const useApp = () => {
     setGuess(guess);
     setLives((numLives) => numLives - 1);
   }, []);
-
-  console.log(`secret: ${secret}`);
-  console.log(`lives: ${lives}`);
 
   return { secret: secret, resetGame, guess, makeGuess, lives };
 };
@@ -53,5 +50,6 @@ const App = () => {
   );
 };
 App.displayName = 'App';
+App.propTypes = {};
 
 export default App;

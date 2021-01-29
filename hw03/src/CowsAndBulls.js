@@ -2,7 +2,8 @@ import './CowsAndBulls.css';
 import cowJpg from './cow.jpg';
 import bullJpg from './bull.jpg';
 
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 const COW = 'COW';
 const BULL = 'BULL';
@@ -24,6 +25,9 @@ const Cattle = ({ type }) => {
   }
 };
 Cattle.displayName = 'Cattle';
+Cattle.propTypes = {
+  type: PropTypes.oneOf([COW, BULL]).isRequired,
+};
 
 const SomeCowsAndBulls = ({ cowsAndBulls }) => {
   return (
@@ -35,11 +39,15 @@ const SomeCowsAndBulls = ({ cowsAndBulls }) => {
   );
 };
 SomeCowsAndBulls.displayName = 'SomeCowsAndBulls';
+SomeCowsAndBulls.propTypes = {
+  cowsAndBulls: PropTypes.array.isRequired,
+};
 
 const NoCowsAndBulls = () => {
   return <>No cows or bulls for current guess</>;
 };
 NoCowsAndBulls.displayName = 'NoCowsAndBulls';
+NoCowsAndBulls.propTypes = {};
 
 const CowsAndBulls = ({ secret, guess }) => {
   const cowsAndBulls = useMemo(
@@ -67,5 +75,9 @@ const CowsAndBulls = ({ secret, guess }) => {
   );
 };
 CowsAndBulls.displayName = 'CowsAndBulls';
+CowsAndBulls.propTypes = {
+  guess: PropTypes.string.isRequired,
+  secret: PropTypes.string,
+};
 
 export default CowsAndBulls;
