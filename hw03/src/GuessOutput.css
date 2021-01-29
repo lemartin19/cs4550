@@ -1,0 +1,10 @@
+.GuessOutput {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.GuessOutput > * {
+  margin: 8px;
+}

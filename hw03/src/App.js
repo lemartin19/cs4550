@@ -1,8 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import './App.css';
-import CowsAndBulls from './CowsAndBulls';
 import GuessInput from './GuessInput';
-import NewGame from './NewGame';
+import GuessOutput from './GuessOutput';
+
+const NUM_LIVES = 8;
 
 const generateSecret = () => {
   const num = Math.random() * 10000;
@@ -11,24 +12,43 @@ const generateSecret = () => {
 };
 
 const useApp = () => {
-  const [secret, setSecret] = useState(generateSecret());
+  const [secret, setSecret] = useState();
   const [guess, setGuess] = useState('');
+  const [lives, setLives] = useState(NUM_LIVES);
+
+  useEffect(() => {
+    setSecret(generateSecret());
+    console.log('setting up the game');
+  }, []);
 
   const resetGame = useCallback(() => {
     setSecret(generateSecret());
     setGuess('');
+    setLives(NUM_LIVES);
   }, []);
+  const makeGuess = useCallback((guess) => {
+    setGuess(guess);
+    setLives((numLives) => numLives - 1);
+  }, []);
+
   console.log(`secret: ${secret}`);
-  return { secret: secret, resetGame, guess, setGuess };
+  console.log(`lives: ${lives}`);
+
+  return { secret: secret, resetGame, guess, makeGuess, lives };
 };
 
 const App = () => {
-  const { secret, resetGame, guess, setGuess } = useApp();
+  const { secret, resetGame, guess, makeGuess, lives } = useApp();
   return (
     <div className="App">
-      <NewGame resetGame={resetGame} />
-      <GuessInput setGuess={setGuess} />
-      <CowsAndBulls secret={secret} guess={guess} />
+      <button onClick={resetGame}>Reset Game</button>
+      <GuessInput
+        guess={guess}
+        secret={secret}
+        setGuess={makeGuess}
+        lives={lives}
+      />
+      <GuessOutput guess={guess} secret={secret} lives={lives} />
     </div>
   );
 };
