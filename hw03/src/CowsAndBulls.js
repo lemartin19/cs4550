@@ -1,12 +1,16 @@
+import './CowsAndBulls.css';
+import cowJpg from './cow.jpg';
+import bullJpg from './bull.jpg';
+
 import { useMemo } from 'react';
 
 const COW = 'COW';
 const BULL = 'BULL';
 
-const Cow = () => <img src="./cow.jpg" alt="cow" />;
+const Cow = () => <img src={cowJpg} alt="cow" />;
 Cow.displayName = 'Cow';
 
-const Bull = () => <img src="./bull.jpg" alt="bull" />;
+const Bull = () => <img src={bullJpg} alt="bull" />;
 Bull.displayName = 'Bull';
 
 const Cattle = ({ type }) => {
@@ -52,10 +56,14 @@ const CowsAndBulls = ({ secret, guess }) => {
     [secret, guess]
   );
 
-  return cowsAndBulls.length ? (
-    <SomeCowsAndBulls cowsAndBulls={cowsAndBulls} />
-  ) : (
-    <NoCowsAndBulls />
+  return (
+    <div className="CowsAndBulls">
+      {cowsAndBulls.length ? (
+        <SomeCowsAndBulls cowsAndBulls={cowsAndBulls} />
+      ) : (
+        <NoCowsAndBulls />
+      )}
+    </div>
   );
 };
 CowsAndBulls.displayName = 'CowsAndBulls';

@@ -1,3 +1,4 @@
+import './GuessInput.css';
 import { useState, useCallback } from 'react';
 
 const useGuessInput = ({ setGuess }) => {
@@ -11,7 +12,9 @@ const useGuessInput = ({ setGuess }) => {
 
   const onSubmit = useCallback(() => {
     setGuess(formContent);
+    setFormContent('');
   }, [setGuess, formContent]);
+
   return { formContent, disableGuess, onChange, onSubmit };
 };
 

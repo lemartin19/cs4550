@@ -1,0 +1,7 @@
+.GuessInput {
+  padding: 20px;
+}
+
+.GuessInput > input {
+  margin: 0 8px;
+}

@@ -1,5 +1,5 @@
-const NewGame = ({ resetSecret }) => (
-  <button onClick={resetSecret}>Reset Game</button>
+const NewGame = ({ resetGame }) => (
+  <button onClick={resetGame}>Reset Game</button>
 );
 NewGame.displayName = 'NewGame';
 

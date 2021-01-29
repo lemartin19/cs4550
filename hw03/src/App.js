@@ -12,23 +12,24 @@ const generateSecret = () => {
 
 const useApp = () => {
   const [secret, setSecret] = useState(generateSecret());
-  const resetSecret = useCallback(() => {
-    setSecret(generateSecret());
-  }, []);
-
   const [guess, setGuess] = useState('');
+
+  const resetGame = useCallback(() => {
+    setSecret(generateSecret());
+    setGuess('');
+  }, []);
   console.log(`secret: ${secret}`);
-  return { secret, resetSecret, guess, setGuess };
+  return { secret: secret, resetGame, guess, setGuess };
 };
 
 const App = () => {
-  const { secret, resetSecret, guess, setGuess } = useApp();
+  const { secret, resetGame, guess, setGuess } = useApp();
   return (
-    <>
-      <NewGame resetSecret={resetSecret} />
+    <div className="App">
+      <NewGame resetGame={resetGame} />
       <GuessInput setGuess={setGuess} />
       <CowsAndBulls secret={secret} guess={guess} />
-    </>
+    </div>
   );
 };
 App.displayName = 'App';
