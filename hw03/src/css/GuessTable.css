@@ -1,10 +1,10 @@
-.GuessOutput {
+.GuessTable {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.GuessOutput > * {
+.GuessTable > * {
   margin: 8px;
 }

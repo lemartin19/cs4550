@@ -1,12 +1,13 @@
-import './GuessInput.css';
+'use es6';
+
+import '../../css/GuessInput.css';
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-const useGuessInput = ({ guess, setGuess, secret, lives }) => {
+const useGuessInput = ({ setGuess }) => {
   const [formContent, setFormContent] = useState('');
 
-  const disableGuess =
-    formContent.length !== 4 || lives === 0 || guess === secret;
+  const disableGuess = formContent.length !== 4;
 
   const onChange = useCallback(({ target }) => {
     setFormContent(target.value);
@@ -20,12 +21,9 @@ const useGuessInput = ({ guess, setGuess, secret, lives }) => {
   return { formContent, disableGuess, onChange, onSubmit };
 };
 
-const GuessInput = ({ guess, setGuess, secret, lives }) => {
+export const GuessInput = ({ setGuess }) => {
   const { formContent, disableGuess, onChange, onSubmit } = useGuessInput({
-    guess,
     setGuess,
-    secret,
-    lives,
   });
   return (
     <div className="GuessInput">
@@ -36,10 +34,5 @@ const GuessInput = ({ guess, setGuess, secret, lives }) => {
 };
 GuessInput.displayName = 'GuessInput';
 GuessInput.propTypes = {
-  guess: PropTypes.string.isRequired,
-  lives: PropTypes.number.isRequired,
   setGuess: PropTypes.func.isRequired,
-  secret: PropTypes.string,
 };
-
-export default GuessInput;
