@@ -8,11 +8,13 @@ import { GuessRow } from './GuessRow';
 import { GuessPropType } from '../constants/GamePropTypes';
 
 export const GuessTable = ({ guesses }) => (
-  <table className="GuessOutput">
+  <table className="GuessTable">
     <thead>
-      <th>#</th>
-      <th>Guess</th>
-      <th>Result</th>
+      <tr>
+        <th>#</th>
+        <th>Guess</th>
+        <th>Result</th>
+      </tr>
     </thead>
     <tbody>
       {guesses.map(({ guess, result }, idx) => (

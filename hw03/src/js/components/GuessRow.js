@@ -1,12 +1,14 @@
 'use es6';
 
+import '../../css/GuessRow.css';
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CowsAndBulls } from './CowsAndBulls';
 import { CowBullTypes } from '../constants/GamePlayConstants';
 
 export const GuessRow = ({ guess, result, idx }) => (
-  <tr>
+  <tr className="GuessRow">
     <td>{idx}</td>
     <td>{guess}</td>
     <td>

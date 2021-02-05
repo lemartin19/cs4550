@@ -3,7 +3,6 @@
 import '../../css/CowsAndBulls.css';
 import cowJpg from '../../img/cow.jpg';
 import bullJpg from '../../img/bull.jpg';
-import grassJpg from '../../img/grass.jpg';
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -16,9 +15,6 @@ Cow.displayName = 'Cow';
 const Bull = () => <img src={bullJpg} alt="bull" />;
 Bull.displayName = 'Bull';
 
-const Grass = () => <img src={grassJpg} alt="neither cow nor bull" />;
-Grass.displayName = 'Grass';
-
 const Cattle = ({ type }) => {
   switch (type) {
     case CowBullTypes.COW:
@@ -26,7 +22,7 @@ const Cattle = ({ type }) => {
     case CowBullTypes.BULL:
       return <Bull />;
     default:
-      return <Grass />;
+      return null;
   }
 };
 Cattle.displayName = 'Cattle';
@@ -37,7 +33,7 @@ Cattle.propTypes = {
 export const CowsAndBulls = ({ result }) => {
   return (
     <div className="CowsAndBulls">
-      {result.map((type, idx) => (
+      {result.sort().map((type, idx) => (
         <Cattle type={type} key={idx} />
       ))}
     </div>

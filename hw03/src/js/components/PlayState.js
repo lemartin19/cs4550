@@ -1,6 +1,7 @@
 'use es6';
 
 import React from 'react';
+import { last } from 'underscore';
 import PropTypes from 'prop-types';
 import { GuessInput } from './GuessInput';
 import { GuessTable } from './GuessTable';
@@ -11,7 +12,7 @@ const Win = ({ guesses }) => (
   <>
     <h1>You won!</h1>
     <p>Game finished in {guesses.length} guesses.</p>
-    <p>Winning guess: {guesses[guesses.length - 1].guess}</p>
+    <p>Winning guess: {last(guesses).guess}</p>
     <p>
       Press <q>Reset game</q> to play again.
     </p>

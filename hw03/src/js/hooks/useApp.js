@@ -1,5 +1,6 @@
 'use es6';
 
+import { last } from 'underscore';
 import { useState, useCallback, useEffect } from 'react';
 import {
   CowBullTypes,
@@ -14,8 +15,9 @@ const generateSecret = () => {
 };
 
 const calcNewPlayState = (playState, guesses, secret) => {
-  if (guesses[guesses.length - 1] === secret) return GamePlayStates.WIN;
-  if (guesses.length >= NUM_LIVES - 1) return GamePlayStates.LOSE;
+  const { guess } = last(guesses);
+  if (guess === secret) return GamePlayStates.WIN;
+  if (guesses.length >= NUM_LIVES) return GamePlayStates.LOSE;
   return playState;
 };
 
@@ -52,7 +54,7 @@ export const useApp = () => {
         guess,
         result: calcGuessResult(guess, secret),
       });
-      const newPlayState = calcNewPlayState(playState, guesses, secret);
+      const newPlayState = calcNewPlayState(playState, newGuesses, secret);
       setState({
         playState: newPlayState,
         secret,
