@@ -9,9 +9,16 @@ import {
 } from '../constants/GamePlayConstants';
 
 const generateSecret = () => {
-  const num = Math.random() * 10000;
-  const string = `${Math.floor(num)}`;
-  return string.padStart(4, 0);
+  const allDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+  const shuffle = (len, digits) => {
+    if (len === 0) return '';
+    const idx = Math.floor(Math.random() * digits.length);
+    const fewerDigits = digits.slice(0, idx).concat(digits.slice(idx + 1));
+    return digits[idx] + shuffle(len - 1, fewerDigits);
+  };
+
+  return shuffle(4, allDigits);
 };
 
 const calcNewPlayState = (playState, guesses, secret) => {
