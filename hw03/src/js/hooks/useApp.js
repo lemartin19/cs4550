@@ -1,6 +1,6 @@
 'use es6';
 
-import { last } from 'underscore';
+import { shuffle, last } from 'underscore';
 import { useState, useCallback, useEffect } from 'react';
 import {
   CowBullTypes,
@@ -9,16 +9,9 @@ import {
 } from '../constants/GamePlayConstants';
 
 const generateSecret = () => {
-  const allDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-  const shuffle = (len, digits) => {
-    if (len === 0) return '';
-    const idx = Math.floor(Math.random() * digits.length);
-    const fewerDigits = digits.slice(0, idx).concat(digits.slice(idx + 1));
-    return digits[idx] + shuffle(len - 1, fewerDigits);
-  };
-
-  return shuffle(4, allDigits);
+  const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const shuffled = shuffle(digits);
+  return shuffled.slice(0, 4).join('');
 };
 
 const calcNewPlayState = (playState, guesses, secret) => {
