@@ -33,10 +33,12 @@ defmodule Bulls.Game do
   end
 
   def add_guess(%{play_state: play_state, guesses: guesses, secret: secret}, guess) do
+    # guesses not allowed for "WIN", "LOSE", or poorly formatted guess
     if is_valid_guess(play_state, guess) do
       to_add = %{guess: guess, result: bulls_and_cows(secret, guess)}
       guesses ++ [to_add]
     else
+      # no error displayed, guesses just won't update
       guesses
     end
   end
