@@ -1,22 +1,22 @@
-'use es6';
+"use es6";
 
-import '../../css/GuessRow.css';
+import "../../css/GuessRow.css";
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { CowsAndBulls } from './CowsAndBulls';
-import { CowBullTypes } from '../constants/GamePlayConstants';
+import React from "react";
+import PropTypes from "prop-types";
+import { CowsAndBulls } from "./CowsAndBulls";
+import { CowBullTypes } from "../constants/GamePlayConstants";
 
 export const GuessRow = ({ guess, result, idx }) => (
   <tr className="GuessRow">
-    <td>{idx}</td>
+    <td>{idx + 1}</td>
     <td>{guess}</td>
     <td>
       <CowsAndBulls result={result} />
     </td>
   </tr>
 );
-GuessRow.displayName = 'GuessRow';
+GuessRow.displayName = "GuessRow";
 GuessRow.propTypes = {
   guess: PropTypes.string.isRequired,
   idx: PropTypes.number.isRequired,

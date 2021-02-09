@@ -1,9 +1,9 @@
-'use es6';
+"use es6";
 
-import React from 'react';
-import '../../css/App.css';
-import { PlayState } from './PlayState';
-import { useApp } from '../hooks/useApp';
+import React from "react";
+import "../../css/App.css";
+import { PlayState } from "./PlayState";
+import { useApp } from "../hooks/useApp";
 
 const App = () => {
   const { playState, guesses, resetGame, makeGuess } = useApp();
@@ -19,7 +19,7 @@ const App = () => {
     </div>
   );
 };
-App.displayName = 'App';
+App.displayName = "App";
 App.propTypes = {};
 
 export default App;

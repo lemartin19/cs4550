@@ -1,11 +1,11 @@
-'use es6';
+"use es6";
 
-import '../../css/GuessTable.css';
+import "../../css/GuessTable.css";
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { GuessRow } from './GuessRow';
-import { GuessPropType } from '../constants/GamePropTypes';
+import React from "react";
+import PropTypes from "prop-types";
+import { GuessRow } from "./GuessRow";
+import { GuessPropType } from "../constants/GamePropTypes";
 
 export const GuessTable = ({ guesses }) => (
   <table className="GuessTable">
@@ -23,7 +23,7 @@ export const GuessTable = ({ guesses }) => (
     </tbody>
   </table>
 );
-GuessTable.displayName = 'GuessTable';
+GuessTable.displayName = "GuessTable";
 GuessTable.propTypes = {
   guesses: PropTypes.arrayOf(GuessPropType).isRequired,
 };
