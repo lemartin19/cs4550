@@ -1,18 +1,16 @@
 "use es6";
 
 import "../../css/CowsAndBulls.css";
-// import cowJpg from "../../static/images/cow.jpg";
-// import bullJpg from "../../static/images/bull.jpg";
 
 import React from "react";
 import PropTypes from "prop-types";
 import { CowBullTypes } from "../constants/GamePlayConstants";
 import { CattlePropType } from "../constants/GamePropTypes";
 
-const Cow = () => <div style={{ padding: "4px" }}>COW</div>; //<img src={cowJpg} alt="cow" />;
+const Cow = () => <div style={{ padding: "4px" }}>COW</div>;
 Cow.displayName = "Cow";
 
-const Bull = () => <div style={{ padding: "4px" }}>BULL</div>; //<img src={bullJpg} alt="bull" />;
+const Bull = () => <div style={{ padding: "4px" }}>BULL</div>;
 Bull.displayName = "Bull";
 
 const Cattle = ({ type }) => {
