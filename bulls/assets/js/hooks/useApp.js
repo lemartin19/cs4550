@@ -1,17 +1,17 @@
-'use es6';
+"use es6";
 
-import { shuffle, last } from 'underscore';
-import { useState, useCallback, useEffect } from 'react';
+import { shuffle, last } from "underscore";
+import { useState, useCallback, useEffect } from "react";
 import {
   CowBullTypes,
   GamePlayStates,
   NUM_LIVES,
-} from '../constants/GamePlayConstants';
+} from "../constants/GamePlayConstants";
 
 const generateSecret = () => {
-  const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   const shuffled = shuffle(digits);
-  return shuffled.slice(0, 4).join('');
+  return shuffled.slice(0, 4).join("");
 };
 
 const calcNewPlayState = (playState, guesses, secret) => {
@@ -22,7 +22,7 @@ const calcNewPlayState = (playState, guesses, secret) => {
 };
 
 const calcGuessResult = (guess, secret) =>
-  guess.split('').map((digit, idx) => {
+  guess.split("").map((digit, idx) => {
     if (secret.charAt(idx) === digit) return CowBullTypes.BULL;
     if (secret.includes(digit)) return CowBullTypes.COW;
     return null;
@@ -31,7 +31,7 @@ const calcGuessResult = (guess, secret) =>
 export const useApp = () => {
   const [state, setState] = useState({
     playState: GamePlayStates.PLAY,
-    secret: '',
+    secret: "",
     guesses: [],
   });
   const { playState, secret, guesses } = state;
