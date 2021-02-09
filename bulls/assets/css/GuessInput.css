@@ -1,0 +1,9 @@
+.GuessInput {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.GuessInput > * {
+  margin: 8px;
+}

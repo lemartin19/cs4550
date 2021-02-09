@@ -1,0 +1,10 @@
+.CowsAndBulls {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+img {
+  height: 100%;
+  margin: 8px;
+}
