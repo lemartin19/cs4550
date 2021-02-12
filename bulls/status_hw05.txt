@@ -2,19 +2,20 @@ Please fill in answers to the questions below:
 
 
 1. What's your name?
-
+Lynnsey Martin
 
 2. What hostname did you deploy to?
-
+seablue.site
 
 3. Which parts of this assignment did you have trouble with, if any?
-
+deploying the app - forgot to uncomment "server: true"
 
 4. What part of your application state is on the server?
-
+all of it
 
 5. What part of your application state, if any, is in the browser?
-
+receives the play state, guesses, and the "bulls and cows" result from the server
+displays them accordingly
 
 And here's a list of tasks for grading comments. Just leave this here:
  - Task 1
