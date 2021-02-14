@@ -140,6 +140,9 @@ header nav a {
   justify-content: center;
   align-items: center; }
 
+.ResetGameHeader > button {
+  margin: 8px; }
+
 .GuessInput {
   padding: 20px;
   display: flex;

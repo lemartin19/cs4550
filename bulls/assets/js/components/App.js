@@ -2,24 +2,21 @@
 
 import React from 'react';
 import '../../css/App.css';
-import { PlayState } from './PlayState';
-import { useApp } from '../hooks/useApp';
+import { useGameId } from '../hooks/useGameId';
+import { InGame } from './InGame';
 import { PickGame } from './PickGame';
 
 const App = () => {
-  const { playState, guesses, resetGame, makeGuess, setGameId } = useApp();
+  const { gameId, setGameId, resetGameId } = useGameId();
 
-  return playState ? (
+  return (
     <div className="App">
-      <button onClick={resetGame}>Reset Game</button>
-      <PlayState
-        playState={playState}
-        guesses={guesses}
-        makeGuess={makeGuess}
-      />
+      {gameId ? (
+        <InGame gameId={gameId} resetGameId={resetGameId} />
+      ) : (
+        <PickGame setGameId={setGameId} />
+      )}
     </div>
-  ) : (
-    <PickGame setGameId={setGameId} />
   );
 };
 App.displayName = 'App';

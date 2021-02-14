@@ -55,4 +55,9 @@ export const channelReset = () => {
     });
 };
 
+export const leaveChannel = () => {
+  channel.leave();
+  channel = undefined;
+};
+
 export default socket;
