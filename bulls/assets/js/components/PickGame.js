@@ -1,10 +1,11 @@
 'use es6';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { usePickGame } from '../hooks/usePickGame';
 
-export const PickGame = () => {
-  const { gameId, onChange, onKeyPress, onSubmit } = usePickGame();
+export const PickGame = ({ setGameId }) => {
+  const { gameId, onChange, onKeyPress, onSubmit } = usePickGame({ setGameId });
   return (
     <div className="GuessInput">
       <input
@@ -19,4 +20,6 @@ export const PickGame = () => {
   );
 };
 PickGame.displayName = 'PickGame';
-PickGame.propTypes = {};
+PickGame.propTypes = {
+  setGameId: PropTypes.func.isRequired,
+};

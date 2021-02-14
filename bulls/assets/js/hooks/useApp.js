@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { joinChannel, channelReset, channelGuess } from '../socket';
 
 export const useApp = () => {
+  const [gameId, setGameId] = useState();
   const [state, setState] = useState({});
 
   useEffect(() => {
-    joinChannel(setState);
-  });
+    if (gameId) joinChannel(gameId, setState);
+  }, [gameId]);
 
   const { play_state, guesses } = state;
   return {
@@ -14,5 +15,6 @@ export const useApp = () => {
     guesses,
     makeGuess: channelGuess,
     resetGame: channelReset,
+    setGameId,
   };
 };

@@ -1,22 +1,21 @@
 'use es6';
 
 import { useCallback, useState } from 'react';
-import { joinChannel } from '../socket';
 
-export const usePickGame = () => {
-  const [gameId, setGameId] = useState('');
+export const usePickGame = ({ setGameId }) => {
+  const [formInput, setFormInput] = useState('');
 
   const onChange = ({ target }) => {
-    setGameId(target.value);
+    setFormInput(target.value);
   };
 
   const onSubmit = useCallback(() => {
-    joinChannel(gameId);
-  }, [gameId]);
+    setGameId(formInput);
+  }, [formInput]);
 
   const onKeyPress = useCallback(({ which }) =>
     which === 13 ? onSubmit() : null
   );
 
-  return { gameId, onChange, onSubmit, onKeyPress };
+  return { formInput, onChange, onSubmit, onKeyPress };
 };

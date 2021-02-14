@@ -27,7 +27,6 @@ const stateUpdate = (newState) => {
 export const joinChannel = (gameId, requestCallback) => {
   channel = socket.channel(`game:${gameId}`, {});
   channel
-    .connect()
     .join()
     .receive('ok', stateUpdate)
     .receive('error', (resp) => {

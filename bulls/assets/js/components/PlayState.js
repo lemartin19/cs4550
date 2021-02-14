@@ -1,13 +1,12 @@
-"use es6";
+'use es6';
 
-import React from "react";
-import { last } from "underscore";
-import PropTypes from "prop-types";
-import { GuessInput } from "./GuessInput";
-import { GuessTable } from "./GuessTable";
-import { GamePlayStates } from "../constants/GamePlayConstants";
-import { GuessPropType, PlayStatePropType } from "../constants/GamePropTypes";
-import { PickGame } from "./PickGame";
+import React from 'react';
+import { last } from 'underscore';
+import PropTypes from 'prop-types';
+import { GuessInput } from './GuessInput';
+import { GuessTable } from './GuessTable';
+import { GamePlayStates } from '../constants/GamePlayConstants';
+import { GuessPropType, PlayStatePropType } from '../constants/GamePropTypes';
 
 const Win = ({ guesses }) => (
   <>
@@ -19,7 +18,7 @@ const Win = ({ guesses }) => (
     </p>
   </>
 );
-Win.displayName = "Win";
+Win.displayName = 'Win';
 Win.propTypes = { guesses: PropTypes.arrayOf(GuessPropType).isRequired };
 
 const Lose = () => (
@@ -30,7 +29,7 @@ const Lose = () => (
     </p>
   </>
 );
-Lose.displayName = "Lose";
+Lose.displayName = 'Lose';
 Lose.propTypes = { guesses: PropTypes.arrayOf(GuessPropType).isRequired };
 
 export const PlayState = ({ playState, guesses, makeGuess }) => {
@@ -47,13 +46,19 @@ export const PlayState = ({ playState, guesses, makeGuess }) => {
     case GamePlayStates.LOSE:
       return <Lose guesses={guesses} />;
     default:
-      // app connecting to channel
-      return <PickGame />;
+      // invalid play state
+      return null;
   }
 };
-PlayState.displayName = "PlayState";
+PlayState.displayName = 'PlayState';
 PlayState.propTypes = {
   guesses: PropTypes.arrayOf(GuessPropType),
   makeGuess: PropTypes.func.isRequired,
   playState: PlayStatePropType,
+  setGameId: PropTypes.func,
+};
+PlayState.defaultProps = {
+  guesses: [],
+  playState: null,
+  setGameId: () => {},
 };
