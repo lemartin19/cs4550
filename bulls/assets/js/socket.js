@@ -6,13 +6,13 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import { Socket } from "phoenix";
+import { Socket } from 'phoenix';
 
-const socket = new Socket("/socket", { params: { token: "" } });
+const socket = new Socket('/socket', { params: { token: '' } });
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-const channel = socket.channel("game:1", {});
+let channel;
 
 let state = {};
 let callback = null;
@@ -24,34 +24,36 @@ const stateUpdate = (newState) => {
   }
 };
 
-export const joinChannel = (requestCallback) => {
+export const joinChannel = (gameId, requestCallback) => {
+  channel = socket.channel(`game:${gameId}`, {});
+  channel
+    .connect()
+    .join()
+    .receive('ok', stateUpdate)
+    .receive('error', (resp) => {
+      console.log(`Unable to join game: ${gameId}`, resp);
+    });
+
   callback = requestCallback;
   callback(state);
 };
 
 export const channelGuess = (guess) => {
   channel
-    .push("guess", { guess })
-    .receive("ok", stateUpdate)
-    .receive("error", (err) => {
-      console.log("Unable to push: " + err);
+    .push('guess', { guess })
+    .receive('ok', stateUpdate)
+    .receive('error', (err) => {
+      console.log('Unable to push: ' + err);
     });
 };
 
 export const channelReset = () => {
   channel
-    .push("reset", {})
-    .receive("ok", stateUpdate)
-    .receive("error", (err) => {
-      console.log("Unable to push: " + err);
+    .push('reset', {})
+    .receive('ok', stateUpdate)
+    .receive('error', (err) => {
+      console.log('Unable to push: ' + err);
     });
 };
-
-channel
-  .join()
-  .receive("ok", stateUpdate)
-  .receive("error", (resp) => {
-    console.log("Unable to join", resp);
-  });
 
 export default socket;

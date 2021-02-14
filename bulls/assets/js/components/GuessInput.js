@@ -1,18 +1,14 @@
 "use es6";
 
 import "../../css/GuessInput.css";
-import React, { useCallback } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { useGuessInput } from "../hooks/useGuessInput";
 
 export const GuessInput = ({ setGuess }) => {
-  const { formContent, error, onChange, onSubmit } = useGuessInput({
+  const { formContent, error, onChange, onSubmit, onKeyPress } = useGuessInput({
     setGuess,
   });
-
-  const onKeyPress = useCallback(({ which }) =>
-    which === 13 ? onSubmit() : null
-  );
   return (
     <div className="GuessInput">
       <input

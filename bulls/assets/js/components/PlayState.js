@@ -7,6 +7,7 @@ import { GuessInput } from "./GuessInput";
 import { GuessTable } from "./GuessTable";
 import { GamePlayStates } from "../constants/GamePlayConstants";
 import { GuessPropType, PlayStatePropType } from "../constants/GamePropTypes";
+import { PickGame } from "./PickGame";
 
 const Win = ({ guesses }) => (
   <>
@@ -47,7 +48,7 @@ export const PlayState = ({ playState, guesses, makeGuess }) => {
       return <Lose guesses={guesses} />;
     default:
       // app connecting to channel
-      return null;
+      return <PickGame />;
   }
 };
 PlayState.displayName = "PlayState";
