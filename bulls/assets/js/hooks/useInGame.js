@@ -6,17 +6,17 @@ import {
   leaveChannel,
 } from '../socket';
 
-export const useInGame = ({ gameId, resetGameId }) => {
+export const useInGame = ({ gameId, userId, resetGameLogin }) => {
   const [state, setState] = useState({});
 
   useEffect(() => {
-    if (gameId) joinChannel(gameId, setState);
+    joinChannel(gameId, userId, setState);
   }, [gameId]);
 
   const leaveGame = useCallback(() => {
     leaveChannel();
     setState({});
-    resetGameId();
+    resetGameLogin();
   });
 
   const { play_state, guesses } = state;

@@ -2,20 +2,31 @@
 
 import { useCallback, useState } from 'react';
 
-export const usePickGame = ({ setGameId }) => {
-  const [formInput, setFormInput] = useState('');
+export const usePickGame = ({ setGameLogin }) => {
+  const [gameId, setGameId] = useState('');
+  const [userId, setUserId] = useState('');
 
-  const onChange = ({ target }) => {
-    setFormInput(target.value);
+  const onGameIdChange = ({ target }) => {
+    setGameId(target.value);
+  };
+  const onUserIdChange = ({ target }) => {
+    setUserId(target.value);
   };
 
-  const onSubmit = useCallback(() => {
-    setGameId(formInput);
-  }, [formInput]);
-
+  const onSubmit = useCallback(
+    () => gameId && userId && setGameLogin({ gameId, userId }),
+    [gameId, userId]
+  );
   const onKeyPress = useCallback(({ which }) =>
     which === 13 ? onSubmit() : null
   );
 
-  return { formInput, onChange, onSubmit, onKeyPress };
+  return {
+    gameId,
+    userId,
+    onGameIdChange,
+    onUserIdChange,
+    onKeyPress,
+    onSubmit,
+  };
 };

@@ -2,19 +2,23 @@
 
 import React from 'react';
 import '../../css/App.css';
-import { useGameId } from '../hooks/useGameId';
+import { useGameLogin } from '../hooks/useGameLogin';
 import { InGame } from './InGame';
 import { PickGame } from './PickGame';
 
 const App = () => {
-  const { gameId, setGameId, resetGameId } = useGameId();
+  const { gameId, userId, setGameLogin, resetGameLogin } = useGameLogin();
 
   return (
     <div className="App">
-      {gameId ? (
-        <InGame gameId={gameId} resetGameId={resetGameId} />
+      {gameId && userId ? (
+        <InGame
+          gameId={gameId}
+          userId={userId}
+          resetGameLogin={resetGameLogin}
+        />
       ) : (
-        <PickGame setGameId={setGameId} />
+        <PickGame setGameLogin={setGameLogin} />
       )}
     </div>
   );

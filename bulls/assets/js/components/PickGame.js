@@ -4,22 +4,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { usePickGame } from '../hooks/usePickGame';
 
-export const PickGame = ({ setGameId }) => {
-  const { gameId, onChange, onKeyPress, onSubmit } = usePickGame({ setGameId });
+export const PickGame = ({ setGameLogin }) => {
+  const {
+    gameId,
+    userId,
+    onGameIdChange,
+    onUserIdChange,
+    onKeyPress,
+    onSubmit,
+  } = usePickGame({
+    setGameLogin,
+  });
+
   return (
-    <div className="GuessInput">
+    <div className="PickGame">
       <input
         type="text"
-        id="logic"
+        id="gameId"
         value={gameId}
-        onChange={onChange}
+        onChange={onGameIdChange}
         onKeyPress={onKeyPress}
       />
-      <input type="submit" onClick={onSubmit} disabled={!!gameId} />
+      <input
+        type="text"
+        id="userId"
+        value={userId}
+        onChange={onUserIdChange}
+        onKeyPress={onKeyPress}
+      />
+      <input type="submit" onClick={onSubmit} disabled={!gameId || !userId} />
     </div>
   );
 };
 PickGame.displayName = 'PickGame';
 PickGame.propTypes = {
-  setGameId: PropTypes.func.isRequired,
+  setGameLogin: PropTypes.func.isRequired,
 };

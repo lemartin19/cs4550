@@ -12,7 +12,7 @@ const socket = new Socket('/socket', { params: { token: '' } });
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-let channel;
+let gameChannel;
 
 let state = {};
 let callback = null;
@@ -24,9 +24,9 @@ const stateUpdate = (newState) => {
   }
 };
 
-export const joinChannel = (gameId, requestCallback) => {
-  channel = socket.channel(`game:${gameId}`, {});
-  channel
+export const joinChannel = (gameId, userId, requestCallback) => {
+  gameChannel = socket.channel(`game:${gameId}`, { ['user-id']: userId });
+  gameChannel
     .join()
     .receive('ok', stateUpdate)
     .receive('error', (resp) => {
@@ -38,7 +38,7 @@ export const joinChannel = (gameId, requestCallback) => {
 };
 
 export const channelGuess = (guess) => {
-  channel
+  gameChannel
     .push('guess', { guess })
     .receive('ok', stateUpdate)
     .receive('error', (err) => {
@@ -47,7 +47,7 @@ export const channelGuess = (guess) => {
 };
 
 export const channelReset = () => {
-  channel
+  gameChannel
     .push('reset', {})
     .receive('ok', stateUpdate)
     .receive('error', (err) => {
@@ -56,8 +56,8 @@ export const channelReset = () => {
 };
 
 export const leaveChannel = () => {
-  channel.leave();
-  channel = undefined;
+  gameChannel.leave();
+  gameChannel = undefined;
 };
 
 export default socket;

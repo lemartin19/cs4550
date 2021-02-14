@@ -41,6 +41,8 @@ export const PlayState = ({ playState, guesses, makeGuess }) => {
           <GuessTable guesses={guesses} />
         </>
       );
+    case GamePlayStates.OBSERVER:
+      return <GuessTable guesses={guesses} />;
     case GamePlayStates.WIN:
       return <Win guesses={guesses} />;
     case GamePlayStates.LOSE:

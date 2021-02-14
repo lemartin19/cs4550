@@ -5,5 +5,6 @@ export const GamePlayStates = {
   PLAY: 'PLAY',
   WIN: 'WIN',
   LOSE: 'LOSE',
+  OBSERVER: 'OBSERVER',
 };
 export const CowBullTypes = { COW: 'COW', BULL: 'BULL' };

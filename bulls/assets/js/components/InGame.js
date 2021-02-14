@@ -18,10 +18,11 @@ ResetGameHeader.propTypes = {
   resetGame: PropTypes.func.isRequired,
 };
 
-export const InGame = ({ gameId, resetGameId }) => {
+export const InGame = ({ gameId, userId, resetGameLogin }) => {
   const { playState, guesses, makeGuess, resetGame, leaveGame } = useInGame({
     gameId,
-    resetGameId,
+    userId,
+    resetGameLogin,
   });
   return (
     <>
@@ -37,6 +38,7 @@ export const InGame = ({ gameId, resetGameId }) => {
 InGame.displayName = 'InGame';
 InGame.propTypes = {
   gameId: PropTypes.string.isRequired,
-  resetGameId: PropTypes.func,
+  resetGameLogin: PropTypes.func,
+  userId: PropTypes.string.isRequired,
 };
-InGame.defaultProps = { resetGameId: () => {} };
+InGame.defaultProps = { resetGameLogin: () => {} };
