@@ -10,14 +10,14 @@ const App = () => {
   const { playState, guesses, resetGame, makeGuess, setGameId } = useApp();
 
   return playState ? (
-    <>
+    <div className="App">
       <button onClick={resetGame}>Reset Game</button>
       <PlayState
         playState={playState}
         guesses={guesses}
         makeGuess={makeGuess}
       />
-    </>
+    </div>
   ) : (
     <PickGame setGameId={setGameId} />
   );
