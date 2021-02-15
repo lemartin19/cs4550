@@ -2,24 +2,36 @@ defmodule Bulls.Game do
   # Handle state for bulls game
   @moduledoc false
 
-  def view(%{play_state: play_state, guesses: guesses}) do
-    %{play_state: play_state, guesses: guesses}
+  defp is_playing(%{players: players}, user_id) do
+    Enum.member?(players, user_id)
   end
 
-  def new do
-    %{play_state: "PLAY", guesses: [], secret: make_secret()}
+  def view(%{play_state: play_state, players: players, guesses: guesses}, user_id) do
+    if is_playing(%{players: players}, user_id) do
+      %{play_state: play_state, guesses: guesses}
+    else
+      %{play_state: "OBSERVER", guesses: guesses}
+    end
   end
 
-  def make_secret() do
+  def new(players) do
+    %{play_state: "PLAY", players: players, guesses: [], secret: make_secret()}
+  end
+
+  defp make_secret() do
     ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
     |> Enum.shuffle()
     |> Enum.take(4)
     |> Enum.join()
   end
 
-  def make_guess(state, guess) do
-    state = %{state | guesses: add_guess(state, guess)}
-    %{state | play_state: next_play_state(state, guess)}
+  def make_guess(state, user_id, guess) do
+    if is_playing(state, user_id) do
+      state = %{state | guesses: add_guess(state, guess)}
+      %{state | play_state: next_play_state(state, guess)}
+    else
+      state
+    end
   end
 
   def next_play_state(%{play_state: play_state, guesses: guesses, secret: secret}, guess) do

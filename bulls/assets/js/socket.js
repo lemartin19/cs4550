@@ -48,7 +48,7 @@ export const addPlayer = (playerType) => {
 
 export const playerReady = () => {
   channel
-    .push('player-ready')
+    .push('player-ready', {})
     .receive('ok', stateUpdate)
     .receive('error', (err) => {
       console.log('Unable to push player-ready: ' + err);
