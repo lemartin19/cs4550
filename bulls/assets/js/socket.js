@@ -12,7 +12,7 @@ const socket = new Socket('/socket', { params: { token: '' } });
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-let gameChannel;
+let channel;
 
 let state = {};
 let callback = null;
@@ -25,8 +25,8 @@ const stateUpdate = (newState) => {
 };
 
 export const joinChannel = (gameId, userId, requestCallback) => {
-  gameChannel = socket.channel(`game:${gameId}`, { ['user-id']: userId });
-  gameChannel
+  channel = socket.channel(`game:${gameId}`, { userId });
+  channel
     .join()
     .receive('ok', stateUpdate)
     .receive('error', (resp) => {
@@ -37,27 +37,45 @@ export const joinChannel = (gameId, userId, requestCallback) => {
   callback(state);
 };
 
+export const addPlayer = (playerType) => {
+  channel
+    .push('player-type', { playerType })
+    .receive('ok', stateUpdate)
+    .receive('error', (err) => {
+      console.log('Unable to push player-type: ' + err);
+    });
+};
+
+export const playerReady = () => {
+  channel
+    .push('player-ready')
+    .receive('ok', stateUpdate)
+    .receive('error', (err) => {
+      console.log('Unable to push player-ready: ' + err);
+    });
+};
+
 export const channelGuess = (guess) => {
-  gameChannel
+  channel
     .push('guess', { guess })
     .receive('ok', stateUpdate)
     .receive('error', (err) => {
-      console.log('Unable to push: ' + err);
+      console.log('Unable to push guess: ' + err);
     });
 };
 
 export const channelReset = () => {
-  gameChannel
+  channel
     .push('reset', {})
     .receive('ok', stateUpdate)
     .receive('error', (err) => {
-      console.log('Unable to push: ' + err);
+      console.log('Unable to push reset: ' + err);
     });
 };
 
 export const leaveChannel = () => {
-  gameChannel.leave();
-  gameChannel = undefined;
+  channel.leave();
+  channel = undefined;
 };
 
 export default socket;

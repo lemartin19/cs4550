@@ -3,10 +3,11 @@
 import React from 'react';
 import { last } from 'underscore';
 import PropTypes from 'prop-types';
-import { GuessInput } from './GuessInput';
-import { GuessTable } from './GuessTable';
 import { GamePlayStates } from '../constants/GamePlayConstants';
 import { GuessPropType, PlayStatePropType } from '../constants/GamePropTypes';
+import { GameSetup } from './GameSetup';
+import { GuessInput } from './GuessInput';
+import { GuessTable } from './GuessTable';
 
 const Win = ({ guesses }) => (
   <>
@@ -32,8 +33,10 @@ const Lose = () => (
 Lose.displayName = 'Lose';
 Lose.propTypes = { guesses: PropTypes.arrayOf(GuessPropType).isRequired };
 
-export const PlayState = ({ playState, guesses, makeGuess }) => {
+export const PlayState = ({ playState, guesses, makeGuess, setup }) => {
   switch (playState) {
+    case GamePlayStates.SETUP:
+      return <GameSetup {...setup} />;
     case GamePlayStates.PLAY:
       return (
         <>
@@ -58,9 +61,15 @@ PlayState.propTypes = {
   makeGuess: PropTypes.func.isRequired,
   playState: PlayStatePropType,
   setGameId: PropTypes.func,
+  setup: PropTypes.shape({
+    numPlayers: PropTypes.number,
+    numReady: PropTypes.number,
+    player: PropTypes.object,
+  }),
 };
 PlayState.defaultProps = {
   guesses: [],
   playState: null,
   setGameId: () => {},
+  setup: {},
 };
