@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GamePlayStates } from '../constants/GamePlayConstants';
-import { GuessPropType, PlayStatePropType } from '../constants/GamePropTypes';
+import { PlayStatePropType } from '../constants/GamePropTypes';
 import { GameSetup } from './GameSetup';
 import { GuessInput } from './GuessInput';
 import { GuessTable } from './GuessTable';
@@ -28,7 +28,7 @@ export const PlayState = ({ playState, guesses, makeGuess, setup }) => {
 };
 PlayState.displayName = 'PlayState';
 PlayState.propTypes = {
-  guesses: PropTypes.arrayOf(GuessPropType),
+  guesses: PropTypes.object,
   makeGuess: PropTypes.func.isRequired,
   playState: PlayStatePropType,
   setGameId: PropTypes.func,

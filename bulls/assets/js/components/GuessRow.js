@@ -1,25 +1,37 @@
-"use es6";
+'use es6';
 
-import "../../css/GuessRow.css";
+import '../../css/GuessRow.css';
 
-import React from "react";
-import PropTypes from "prop-types";
-import { CowsAndBulls } from "./CowsAndBulls";
-import { CowBullTypes } from "../constants/GamePlayConstants";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { CowsAndBulls } from './CowsAndBulls';
+import { CowBullTypes } from '../constants/GamePlayConstants';
+import { GuessPropType } from '../constants/GamePropTypes';
 
-export const GuessRow = ({ guess, result, idx }) => (
-  <tr className="GuessRow">
-    <td>{idx + 1}</td>
+const GuessAndResult = ({ guess, result }) => (
+  <>
     <td>{guess}</td>
     <td>
       <CowsAndBulls result={result} />
     </td>
+  </>
+);
+GuessAndResult.displayName = 'GuessAndResult';
+GuessAndResult.propTypes = {
+  guess: PropTypes.string.isRequired,
+  result: PropTypes.arrayOf(PropTypes.oneOf(Object.keys(CowBullTypes))),
+};
+
+export const GuessRow = ({ idx, round }) => (
+  <tr className="GuessRow">
+    <td>{idx + 1}</td>
+    {round.map(({ guess, result }, idx) => (
+      <GuessAndResult key={idx} guess={guess} result={result} />
+    ))}
   </tr>
 );
-GuessRow.displayName = "GuessRow";
+GuessRow.displayName = 'GuessRow';
 GuessRow.propTypes = {
-  guess: PropTypes.string.isRequired,
   idx: PropTypes.number.isRequired,
-  result: PropTypes.arrayOf(PropTypes.oneOf(Object.keys(CowBullTypes)))
-    .isRequired,
+  round: PropTypes.arrayOf(GuessPropType).isRequired,
 };

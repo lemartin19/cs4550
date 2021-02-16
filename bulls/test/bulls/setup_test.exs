@@ -3,10 +3,9 @@ defmodule Bulls.GameTest do
   import Bulls
 
   test "new" do
-    new_game = Bulls.Game.new([])
-    assert new_game.guesses == %{}
-    assert new_game.this_round == %{}
-    assert String.length(new_game.secret) == 4
+    new_game = Bulls.Setup.new([])
+    assert new_game.winners == []
+    assert new_game.people == %{}
 
     new_game = Bulls.Game.new(["lmartin"])
     assert new_game.guesses == %{"lmartin" => []}

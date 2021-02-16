@@ -38,6 +38,7 @@ const TableBody = ({ orderedGuesses }) => (
     {orderedGuesses[0].map((_, roundNum) => (
       <GuessRow
         key={roundNum}
+        idx={roundNum}
         round={orderedGuesses.map((allGuesses) => allGuesses[roundNum])}
       />
     ))}
@@ -61,5 +62,5 @@ export const GuessTable = ({ guesses }) => {
 };
 GuessTable.displayName = 'GuessTable';
 GuessTable.propTypes = {
-  guesses: PropTypes.arrayOf(GuessPropType).isRequired,
+  guesses: PropTypes.object.isRequired,
 };
