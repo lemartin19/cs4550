@@ -1,4 +1,5 @@
 defmodule BullsWeb.GameChannel do
+  require Logger
   use BullsWeb, :channel
 
   alias Bulls.Handler

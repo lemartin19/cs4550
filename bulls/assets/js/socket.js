@@ -54,6 +54,7 @@ export const channelReset = () => channel.push('reset', {});
 export const leaveChannel = () => {
   channel.leave();
   channel = undefined;
+  stateUpdate({});
 };
 
 export default socket;

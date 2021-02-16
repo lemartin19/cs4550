@@ -1,13 +1,13 @@
-"use es6";
+'use es6';
 
-import "../../css/GuessInput.css";
-import React from "react";
-import PropTypes from "prop-types";
-import { useGuessInput } from "../hooks/useGuessInput";
+import '../../css/GuessInput.css';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useGuessInput } from '../hooks/useGuessInput';
 
-export const GuessInput = ({ setGuess }) => {
+export const GuessInput = ({ makeGuess }) => {
   const { formContent, error, onChange, onSubmit, onKeyPress } = useGuessInput({
-    setGuess,
+    makeGuess,
   });
   return (
     <div className="GuessInput">
@@ -23,7 +23,7 @@ export const GuessInput = ({ setGuess }) => {
     </div>
   );
 };
-GuessInput.displayName = "GuessInput";
+GuessInput.displayName = 'GuessInput';
 GuessInput.propTypes = {
-  setGuess: PropTypes.func.isRequired,
+  makeGuess: PropTypes.func.isRequired,
 };

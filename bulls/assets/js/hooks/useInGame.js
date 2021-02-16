@@ -1,23 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
-import {
-  joinChannel,
-  channelReset,
-  channelGuess,
-  leaveChannel,
-} from '../socket';
+import { useState, useEffect } from 'react';
+import { joinChannel, channelGuess } from '../socket';
 
-export const useInGame = ({ gameId, userId, resetGameLogin }) => {
+export const useInGame = ({ gameId, userId }) => {
   const [state, setState] = useState({});
 
   useEffect(() => {
     joinChannel(gameId, userId, setState);
-  }, [gameId]);
-
-  const leaveGame = useCallback(() => {
-    leaveChannel();
-    setState({});
-    resetGameLogin();
-  });
+  }, [gameId, userId]);
 
   const {
     play_state,
@@ -38,7 +27,5 @@ export const useInGame = ({ gameId, userId, resetGameLogin }) => {
       player,
       winners,
     },
-    resetGame: channelReset,
-    leaveGame,
   };
 };

@@ -3,43 +3,39 @@
 import '../../css/InGame.css';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { PlayState } from './PlayState';
+import { GamePlayStates } from '../constants/GamePlayConstants';
 import { useInGame } from '../hooks/useInGame';
+import { GamePlay } from './GamePlay';
+import { GameSetup } from './GameSetup';
+import { useResetGameHeader } from '../hooks/useResetGameHeader';
 
-const ResetGameHeader = ({ resetGame, leaveGame }) => (
-  <div className="ResetGameHeader">
-    <button onClick={resetGame}>Reset Game</button>
-    <button onClick={leaveGame}>Pick a different game</button>
-  </div>
-);
+const ResetGameHeader = ({ resetGameLogin }) => {
+  const { resetGame, leaveGame } = useResetGameHeader({ resetGameLogin });
+  return (
+    <div className="ResetGameHeader">
+      <button onClick={resetGame}>Reset Game</button>
+      <button onClick={leaveGame}>Pick a different game</button>
+    </div>
+  );
+};
 ResetGameHeader.displayName = 'ResetGameHeader';
 ResetGameHeader.propTypes = {
-  leaveGame: PropTypes.func.isRequired,
-  resetGame: PropTypes.func.isRequired,
+  resetGameLogin: PropTypes.func.isRequired,
 };
 
 export const InGame = ({ gameId, userId, resetGameLogin }) => {
-  const {
-    playState,
-    guesses,
-    setupProps,
-    makeGuess,
-    resetGame,
-    leaveGame,
-  } = useInGame({
+  const { playState, guesses, setupProps, makeGuess } = useInGame({
     gameId,
     userId,
-    resetGameLogin,
   });
   return (
     <>
-      <ResetGameHeader resetGame={resetGame} leaveGame={leaveGame} />
-      <PlayState
-        playState={playState}
-        guesses={guesses}
-        makeGuess={makeGuess}
-        setup={setupProps}
-      />
+      <ResetGameHeader resetGameLogin={resetGameLogin} />
+      {playState === GamePlayStates.PLAY ? (
+        <GamePlay userId={userId} guesses={guesses} makeGuess={makeGuess} />
+      ) : (
+        <GameSetup {...setupProps} />
+      )}
     </>
   );
 };
