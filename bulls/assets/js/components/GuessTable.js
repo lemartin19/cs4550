@@ -1,29 +1,65 @@
-"use es6";
+'use es6';
 
-import "../../css/GuessTable.css";
+import '../../css/GuessTable.css';
 
-import React from "react";
-import PropTypes from "prop-types";
-import { GuessRow } from "./GuessRow";
-import { GuessPropType } from "../constants/GamePropTypes";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { GuessRow } from './GuessRow';
+import { GuessPropType } from '../constants/GamePropTypes';
 
-export const GuessTable = ({ guesses }) => (
-  <table className="GuessTable">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Guess</th>
-        <th>Result</th>
-      </tr>
-    </thead>
-    <tbody>
-      {guesses.map(({ guess, result }, idx) => (
-        <GuessRow idx={idx} guess={guess} result={result} key={guess} />
+const TableHeader = ({ users }) => (
+  <thead>
+    <tr>
+      <th>Round</th>
+      {users.map((userId) => (
+        <th colSpan="2" key={userId}>
+          {userId}
+        </th>
       ))}
-    </tbody>
-  </table>
+    </tr>
+    <tr>
+      <th></th>
+      {users.map((userId) => (
+        <>
+          <th key={`${userId}-guess`}>Guess</th>
+          <th key={`${userId}-result`}>Result</th>
+        </>
+      ))}
+    </tr>
+  </thead>
 );
-GuessTable.displayName = "GuessTable";
+TableHeader.displayName = 'TableHeader';
+TableHeader.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+const TableBody = ({ orderedGuesses }) => (
+  <tbody>
+    {orderedGuesses[0].map((_, roundNum) => (
+      <GuessRow
+        key={roundNum}
+        round={orderedGuesses.map((allGuesses) => allGuesses[roundNum])}
+      />
+    ))}
+  </tbody>
+);
+TableBody.displayName = 'TableBody';
+TableBody.propTypes = {
+  orderedGuesses: PropTypes.arrayOf(PropTypes.arrayOf(GuessPropType))
+    .isRequired,
+};
+
+export const GuessTable = ({ guesses }) => {
+  const userIds = Object.keys(guesses);
+  const orderedGuesses = userIds.map((userId) => guesses[userId]);
+  return (
+    <table className="GuessTable">
+      <TableHeader users={userIds} />
+      <TableBody orderedGuesses={orderedGuesses} />
+    </table>
+  );
+};
+GuessTable.displayName = 'GuessTable';
 GuessTable.propTypes = {
   guesses: PropTypes.arrayOf(GuessPropType).isRequired,
 };

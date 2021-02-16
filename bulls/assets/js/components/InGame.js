@@ -19,7 +19,14 @@ ResetGameHeader.propTypes = {
 };
 
 export const InGame = ({ gameId, userId, resetGameLogin }) => {
-  const { playState, playProps, setupProps, resetGame, leaveGame } = useInGame({
+  const {
+    playState,
+    guesses,
+    setupProps,
+    makeGuess,
+    resetGame,
+    leaveGame,
+  } = useInGame({
     gameId,
     userId,
     resetGameLogin,
@@ -27,7 +34,12 @@ export const InGame = ({ gameId, userId, resetGameLogin }) => {
   return (
     <>
       <ResetGameHeader resetGame={resetGame} leaveGame={leaveGame} />
-      <PlayState playState={playState} {...playProps} setup={setupProps} />
+      <PlayState
+        playState={playState}
+        guesses={guesses}
+        makeGuess={makeGuess}
+        setup={setupProps}
+      />
     </>
   );
 };

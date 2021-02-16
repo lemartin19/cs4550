@@ -19,14 +19,24 @@ export const useInGame = ({ gameId, userId, resetGameLogin }) => {
     resetGameLogin();
   });
 
-  const { play_state, guesses, num_players, num_players_ready, player } = state;
+  const {
+    play_state,
+    guesses,
+    num_players,
+    num_players_ready,
+    winners,
+    player,
+  } = state;
+
   return {
     playState: play_state,
-    playProps: { guesses, makeGuess: channelGuess },
+    guesses,
+    makeGuess: channelGuess,
     setupProps: {
       numPlayers: num_players,
       numReady: num_players_ready,
       player,
+      winners,
     },
     resetGame: channelReset,
     leaveGame,
