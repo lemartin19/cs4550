@@ -1,4 +1,4 @@
-defmodule Bulls.GameTest do
+defmodule Bulls.SetupTest do
   use ExUnit.Case
   import Bulls
 
@@ -7,126 +7,93 @@ defmodule Bulls.GameTest do
     assert new_game.winners == []
     assert new_game.people == %{}
 
-    new_game = Bulls.Game.new(["lmartin"])
-    assert new_game.guesses == %{"lmartin" => []}
-    assert new_game.this_round == %{}
-    assert String.length(new_game.secret) == 4
+    new_game = Bulls.Setup.new(["lmartin", "lynnsey"])
+    assert new_game.winners == ["lmartin", "lynnsey"]
+    assert new_game.people == %{}
   end
 
   test "view" do
-    game = Bulls.Game.new(["lmartin"])
-    assert Bulls.Game.view(game, "lmartin") == %{play_state: "PLAY", guesses: %{"lmartin" => []}}
+    game = Bulls.Setup.new(["lmartin"])
 
-    game = Bulls.Game.new(["lmartin", "lynnsey", "lynnz"])
-
-    assert Bulls.Game.view(game, "lmartin") == %{
-             play_state: "PLAY",
-             guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []}
+    assert Bulls.Setup.view(game, "lmartin") == %{
+             play_state: "SETUP",
+             player: %{type: "OBSERVER", ready: false},
+             winners: ["lmartin"],
+             num_players: 0,
+             num_players_ready: 0
            }
 
-    assert Bulls.Game.view(game, "other") == %{
-             play_state: "OBSERVER",
-             guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []}
-           }
-  end
+    game = Bulls.Setup.new(["lmartin", "lynnsey", "lynnz"])
 
-  test "make_guess" do
-    state = %{this_round: %{}, guesses: %{"lmartin" => []}, secret: "6832"}
-
-    assert Bulls.Game.make_guess(state, "lmartin", "1234") == %{
-             state
-             | guesses: %{"lmartin" => [%{guess: "1234", result: [nil, "COW", "BULL", nil]}]}
+    assert Bulls.Setup.view(game, "other") == %{
+             play_state: "SETUP",
+             player: %{type: "OBSERVER", ready: false},
+             winners: ["lmartin", "lynnsey", "lynnz"],
+             num_players: 0,
+             num_players_ready: 0
            }
 
-    assert Bulls.Game.make_guess(state, "lynnz", "1234") == state
-    assert Bulls.Game.make_guess(state, "lmartin", "123") == state
-    assert Bulls.Game.make_guess(state, "lmartin", "1233") == state
-    assert Bulls.Game.make_guess(state, "lmartin", "12344") == state
+    game = game |> Bulls.Setup.add_player("other", "PLAYER")
 
-    state =
-      state
-      |> Bulls.Game.make_guess("lmartin", "1234")
-      |> Bulls.Game.make_guess("lmartin", "5678")
-
-    assert state.guesses == %{
-             "lmartin" => [
-               %{guess: "5678", result: [nil, "COW", nil, "COW"]},
-               %{guess: "1234", result: [nil, "COW", "BULL", nil]}
-             ]
+    assert Bulls.Setup.view(game, "other") == %{
+             play_state: "SETUP",
+             player: %{type: "PLAYER", ready: false},
+             winners: ["lmartin", "lynnsey", "lynnz"],
+             num_players: 1,
+             num_players_ready: 0
            }
 
-    assert Bulls.Game.make_guess(state, "lmartin", "6832") == Bulls.Setup.new(["lmartin"])
+    game = game |> Bulls.Setup.mark_player_ready("lmartin")
 
-    state =
-      %{
-        this_round: %{},
-        guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []},
-        secret: "6832"
-      }
-      |> Bulls.Game.make_guess("lynnz", "1234")
-      |> Bulls.Game.make_guess("lmartin", "5678")
-      |> Bulls.Game.make_guess("lynnsey", "9012")
-
-    assert state.this_round == %{}
-
-    assert state.guesses == %{
-             "lynnz" => [%{guess: "1234", result: [nil, "COW", "BULL", nil]}],
-             "lmartin" => [%{guess: "5678", result: [nil, "COW", nil, "COW"]}],
-             "lynnsey" => [%{guess: "9012", result: [nil, nil, nil, "BULL"]}]
-           }
-
-    assert Enum.count(state.guesses) == 3
-    assert Enum.all?(state.guesses, fn {key, guesses} -> Enum.count(guesses) == 1 end)
-    assert Bulls.Game.make_guess(state, "other", "9034") == state
-    assert Bulls.Game.make_guess(state, "lmartin", "9034").this_round == %{"lmartin" => "9034"}
-    assert Bulls.Game.make_guess(state, "lynnz", "9034").this_round == %{"lynnz" => "9034"}
-
-    state =
-      state
-      |> Bulls.Game.make_guess("lynnz", "1234")
-      |> Bulls.Game.make_guess("lmartin", "6832")
-
-    assert Bulls.Game.make_guess(state, "lmartin", "9034") == state
-
-    assert Bulls.Game.make_guess(state, "lynnsey", "6832") ==
-             Bulls.Setup.new(["lmartin", "lynnsey"])
-
-    assert Bulls.Game.make_guess(state, "lynnsey", "6834") ==
-             Bulls.Setup.new(["lmartin"])
-  end
-
-  test "add_guess" do
-    state = %{this_round: %{"lmartin" => "1234"}}
-
-    assert Bulls.Game.add_guess(state, "lmartin", "5678") == state.this_round
-    assert Bulls.Game.add_guess(state, "lynnz", "1111") == state.this_round
-    assert Bulls.Game.add_guess(state, "lynnz", "123") == state.this_round
-
-    assert Bulls.Game.add_guess(state, "lynnz", "6283") == %{
-             "lmartin" => "1234",
-             "lynnz" => "6283"
+    assert Bulls.Setup.view(game, "other") == %{
+             play_state: "SETUP",
+             player: %{type: "PLAYER", ready: false},
+             winners: ["lmartin", "lynnsey", "lynnz"],
+             num_players: 2,
+             num_players_ready: 1
            }
   end
 
-  test "bulls_and_cows" do
-    assert Bulls.Game.bulls_and_cows("1234", "1234") == ["BULL", "BULL", "BULL", "BULL"]
-    assert Bulls.Game.bulls_and_cows("6832", "1234") == [nil, "COW", "BULL", nil]
-    assert Bulls.Game.bulls_and_cows("5678", "1234") == [nil, nil, nil, nil]
+  test "add_player" do
+    game = Bulls.Setup.new([]) |> Bulls.Setup.add_player("lmartin", "OBSERVER")
+    assert game.people == %{"lmartin" => %{type: "OBSERVER", ready: false}}
+
+    game = game |> Bulls.Setup.add_player("lynnsey", "PLAYER")
+
+    assert game.people == %{
+             "lmartin" => %{type: "OBSERVER", ready: false},
+             "lynnsey" => %{type: "PLAYER", ready: false}
+           }
+
+    game = game |> Bulls.Setup.add_player("lmartin", "PLAYER")
+
+    assert game.people == %{
+             "lmartin" => %{type: "PLAYER", ready: false},
+             "lynnsey" => %{type: "PLAYER", ready: false}
+           }
   end
 
-  test "bull_or_cow" do
-    assert Bulls.Game.bull_or_cow(0, ["1", "2", "3", "4"], ["1", "2", "3", "4"]) == "BULL"
-    assert Bulls.Game.bull_or_cow(1, ["1", "2", "3", "4"], ["6", "8", "3", "2"]) == "COW"
-    assert Bulls.Game.bull_or_cow(3, ["1", "2", "3", "4"], ["6", "8", "3", "2"]) == nil
-  end
+  test "mark_player_ready" do
+    game =
+      Bulls.Setup.new([])
+      |> Bulls.Setup.add_player("lmartin", "PLAYER")
+      |> Bulls.Setup.add_player("lynnsey", "OBSERVER")
+      |> Bulls.Setup.add_player("lynnz", "PLAYER")
+      |> Bulls.Setup.mark_player_ready("lmartin")
 
-  test "is_valid_guess" do
-    assert Bulls.Game.is_valid_guess(%{}, "lmartin", "1234")
-    assert Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "1234")
-    assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lmartin", "1234")
-    assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "123")
-    assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "12345")
-    assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "1233")
-    assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "12344")
+    assert game.people == %{
+             "lmartin" => %{type: "PLAYER", ready: true},
+             "lynnsey" => %{type: "OBSERVER", ready: false},
+             "lynnz" => %{type: "PLAYER", ready: false}
+           }
+
+    assert Bulls.Setup.mark_player_ready(game, "lynnsey").people == %{
+             "lmartin" => %{type: "PLAYER", ready: true},
+             "lynnsey" => %{type: "PLAYER", ready: true},
+             "lynnz" => %{type: "PLAYER", ready: false}
+           }
+
+    game = game |> Bulls.Setup.mark_player_ready("lynnz")
+    assert game.guesses == %{"lmartin" => [], "lynnz" => []}
   end
 end

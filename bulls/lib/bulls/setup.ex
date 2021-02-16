@@ -44,13 +44,15 @@ defmodule Bulls.Setup do
   end
 
   def mark_player_ready(%{winners: winners, people: people}, user_id) do
-    if people |> Enum.filter(&is_player(&1)) |> Enum.all?(&is_ready(&1)) do
-      %{winners: winners, people: set_person(people, user_id, %{type: "PLAYER", ready: true})}
-    else
-      people
+    new_people = set_person(people, user_id, %{type: "PLAYER", ready: true})
+
+    if new_people |> Enum.filter(&is_player(&1)) |> Enum.all?(&is_ready(&1)) do
+      new_people
       |> Enum.filter(&is_player(&1))
       |> Enum.map(fn {id, _} -> id end)
       |> Bulls.Game.new()
+    else
+      %{winners: winners, people: new_people}
     end
   end
 end
