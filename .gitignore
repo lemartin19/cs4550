@@ -1,6 +1,7 @@
 .elixir_ls
 .vscode
 .formatter.exs
+bulls/priv/static
 
 # The directory Mix will write compiled artifacts to.
 _build/
