@@ -2,20 +2,31 @@ defmodule Bulls.Game do
   # Handle state for bulls game
   @moduledoc false
 
-  defp is_playing(%{players: players}, user_id) do
-    Enum.member?(players, user_id)
+  defp is_playing(%{guesses: guesses}, user_id) do
+    Map.has_key?(guesses, user_id)
   end
 
-  def view(%{play_state: play_state, players: players, guesses: guesses}, user_id) do
-    if is_playing(%{players: players}, user_id) do
-      %{play_state: play_state, guesses: guesses}
+  def view(state, user_id) do
+    %{guesses: guesses} = state
+
+    if is_playing(state, user_id) do
+      %{play_state: "PLAY", guesses: guesses}
     else
       %{play_state: "OBSERVER", guesses: guesses}
     end
   end
 
   def new(players) do
-    %{play_state: "PLAY", players: players, guesses: [], secret: make_secret()}
+    guesses =
+      Enum.reduce(
+        players,
+        %{},
+        fn user_id, acc ->
+          Map.merge(acc, %{user_id => []})
+        end
+      )
+
+    %{this_round: %{}, guesses: guesses, secret: make_secret()}
   end
 
   defp make_secret() do
@@ -25,33 +36,55 @@ defmodule Bulls.Game do
     |> Enum.join()
   end
 
+  defp all_guesses_in(%{this_round: this_round, guesses: guesses, secret: secret}) do
+    same_as_secret = fn {_, guess} -> guess == secret end
+
+    if Enum.any?(this_round, same_as_secret) do
+      this_round
+      |> Enum.filter(same_as_secret)
+      |> Enum.map(fn {user_id, _} -> user_id end)
+      |> Bulls.Setup.new()
+    else
+      new_guesses =
+        Enum.reduce(
+          this_round,
+          guesses,
+          fn {user_id, guess}, acc ->
+            to_add = %{guess: guess, result: bulls_and_cows(secret, guess)}
+            %{acc | user_id => to_add}
+          end
+        )
+
+      %{secret: secret, guesses: new_guesses, this_round: []}
+    end
+  end
+
+  defp check_all_guesses(state) do
+    %{this_round: this_round, guesses: guesses} = state
+
+    if Enum.count(this_round) < Enum.count(guesses) do
+      state
+    else
+      all_guesses_in(state)
+    end
+  end
+
   def make_guess(state, user_id, guess) do
     if is_playing(state, user_id) do
-      state = %{state | guesses: add_guess(state, guess)}
-      %{state | play_state: next_play_state(state, guess)}
+      state = %{state | this_round: add_guess(state, user_id, guess)}
+      check_all_guesses(state)
     else
       state
     end
   end
 
-  def next_play_state(%{play_state: play_state, guesses: guesses, secret: secret}, guess) do
-    cond do
-      play_state == "WIN" -> "WIN"
-      play_state == "LOSE" -> "LOSE"
-      guess == secret -> "WIN"
-      Enum.count(guesses) == 8 -> "LOSE"
-      true -> "PLAY"
-    end
-  end
-
-  def add_guess(%{play_state: play_state, guesses: guesses, secret: secret}, guess) do
+  def add_guess(%{this_round: this_round}, user_id, guess) do
     # guesses not allowed for "WIN", "LOSE", or poorly formatted guess
-    if is_valid_guess(play_state, guess) do
-      to_add = %{guess: guess, result: bulls_and_cows(secret, guess)}
-      guesses ++ [to_add]
+    if is_valid_guess(this_round, user_id, guess) do
+      Map.merge(this_round, %{user_id => guess})
     else
       # no error displayed, guesses just won't update
-      guesses
+      this_round
     end
   end
 
@@ -71,8 +104,9 @@ defmodule Bulls.Game do
     end
   end
 
-  def is_valid_guess(play_state, guess) do
-    play_state == "PLAY" && String.length(guess) == 4 &&
+  def is_valid_guess(this_round, user_id, guess) do
+    !Map.has_key?(this_round, user_id) &&
+      String.length(guess) == 4 &&
       guess
       |> split_and_strip
       |> Enum.uniq()
