@@ -73,14 +73,14 @@ PlayerStatuses.propTypes = {
   numReady: PropTypes.number.isRequired,
 };
 
-export const GameSetup = ({ numPlayers, numReady, player }) => {
+export const GameSetup = ({ numPlayers, numReady }) => {
   const {
     disabled,
     showReadyToggle,
     playerType,
     setPlayerType,
     playerIsReady,
-  } = useGameSetup(player);
+  } = useGameSetup();
   return (
     <div className="GameSetup">
       <TypePicker

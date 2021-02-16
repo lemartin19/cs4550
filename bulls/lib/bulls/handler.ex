@@ -9,12 +9,12 @@ defmodule Bulls.Handler do
     Setup.new()
   end
 
-  def view(%{people: people, winners: winners}, user_id) do
-    Setup.view(%{people: people, winners: winners}, user_id)
+  def view(%{people: people, winners: winners}) do
+    Setup.view(%{people: people, winners: winners})
   end
 
-  def view(game, user_id) do
-    Game.view(game, user_id)
+  def view(game) do
+    Game.view(game)
   end
 
   def add_player(%{people: people, winners: winners}, user_id, type) do

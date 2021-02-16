@@ -10,7 +10,7 @@ defmodule BullsWeb.GameChannel do
     game = BackupAgent.get(name) || Handler.new()
     socket = socket |> assign(:name, name) |> assign(:user_id, user_id)
     BackupAgent.put(name, game)
-    view = Handler.view(game, user_id)
+    view = Handler.view(game)
     {:ok, view, socket}
   end
 
@@ -21,9 +21,10 @@ defmodule BullsWeb.GameChannel do
     view =
       socket.assigns[:name]
       |> BackupAgent.update(fn game -> Handler.add_player(game, user_id, type) end)
-      |> Handler.view(user_id)
+      |> Handler.view()
 
-    {:reply, {:ok, view}, socket}
+    broadcast!(socket, "player-type", view)
+    {:noreply, socket}
   end
 
   @impl true
@@ -33,9 +34,10 @@ defmodule BullsWeb.GameChannel do
     view =
       socket.assigns[:name]
       |> BackupAgent.update(fn game -> Handler.mark_player_ready(game, user_id) end)
-      |> Handler.view(user_id)
+      |> Handler.view()
 
-    {:reply, {:ok, view}, socket}
+    broadcast!(socket, "player-ready", view)
+    {:noreply, socket}
   end
 
   @impl true
@@ -45,17 +47,19 @@ defmodule BullsWeb.GameChannel do
     view =
       socket.assigns[:name]
       |> BackupAgent.update(fn game -> Handler.make_guess(game, user_id, guess) end)
-      |> Handler.view(user_id)
+      |> Handler.view()
 
-    {:reply, {:ok, view}, socket}
+    broadcast!(socket, "guess", view)
+    {:noreply, socket}
   end
 
   @impl true
   def handle_in("reset", _payload, socket) do
     game = Handler.new()
     BackupAgent.put(socket.assigns[:name], game)
-    view = Handler.view(game, socket.assigns[:user_id])
-    {:reply, {:ok, view}, socket}
+    view = Handler.view(game)
+    broadcast!(socket, "reset", view)
+    {:noreply, socket}
   end
 
   # Add authorization logic here as required.

@@ -18,17 +18,9 @@ defmodule Bulls.Setup do
     ready
   end
 
-  def view(%{people: people, winners: winners}, user_id) do
-    person =
-      if Map.has_key?(people, user_id) do
-        people[user_id]
-      else
-        %{type: "OBSERVER", ready: false}
-      end
-
+  def view(%{people: people, winners: winners}) do
     %{
       play_state: "SETUP",
-      player: person,
       num_players_ready: people |> Enum.filter(&is_player(&1)) |> Enum.count(&is_ready(&1)),
       num_players: Enum.count(people, &is_player(&1)),
       winners: winners

@@ -33,45 +33,23 @@ export const joinChannel = (gameId, userId, requestCallback) => {
       console.log(`Unable to join game: ${gameId}`, resp);
     });
 
+  channel.on('player-type', stateUpdate);
+  channel.on('player-ready', stateUpdate);
+  channel.on('guess', stateUpdate);
+  channel.on('reset', stateUpdate);
+
   callback = requestCallback;
   callback(state);
 };
 
-export const addPlayer = (playerType) => {
-  channel
-    .push('player-type', { playerType })
-    .receive('ok', stateUpdate)
-    .receive('error', (err) => {
-      console.log('Unable to push player-type: ' + err);
-    });
-};
+export const addPlayer = (playerType) =>
+  channel.push('player-type', { playerType });
 
-export const playerReady = () => {
-  channel
-    .push('player-ready', {})
-    .receive('ok', stateUpdate)
-    .receive('error', (err) => {
-      console.log('Unable to push player-ready: ' + err);
-    });
-};
+export const playerReady = () => channel.push('player-ready', {});
 
-export const channelGuess = (guess) => {
-  channel
-    .push('guess', { guess })
-    .receive('ok', stateUpdate)
-    .receive('error', (err) => {
-      console.log('Unable to push guess: ' + err);
-    });
-};
+export const channelGuess = (guess) => channel.push('guess', { guess });
 
-export const channelReset = () => {
-  channel
-    .push('reset', {})
-    .receive('ok', stateUpdate)
-    .receive('error', (err) => {
-      console.log('Unable to push reset: ' + err);
-    });
-};
+export const channelReset = () => channel.push('reset', {});
 
 export const leaveChannel = () => {
   channel.leave();

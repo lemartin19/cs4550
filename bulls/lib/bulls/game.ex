@@ -19,14 +19,8 @@ defmodule Bulls.Game do
     Map.has_key?(guesses, user_id)
   end
 
-  def view(state, user_id) do
-    %{guesses: guesses} = state
-
-    if is_playing(state, user_id) do
-      %{play_state: "PLAY", guesses: guesses}
-    else
-      %{play_state: "OBSERVER", guesses: guesses}
-    end
+  def view(%{guesses: guesses}) do
+    %{play_state: "PLAY", guesses: guesses}
   end
 
   defp make_secret() do
