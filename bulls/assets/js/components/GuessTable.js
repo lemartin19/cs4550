@@ -7,11 +7,33 @@ import PropTypes from 'prop-types';
 import { GuessRow } from './GuessRow';
 import { GuessPropType } from '../constants/GamePropTypes';
 
-const TableHeader = ({ users }) => (
+const TableColorings = ({ userIds }) => (
+  <colgroup>
+    <col />
+    {userIds.map((_, idx) => (
+      <col key={idx} span="2" className={idx % 2 === 0 ? 'even' : 'odd'}></col>
+    ))}
+  </colgroup>
+);
+TableColorings.displayName = 'TableColorings';
+TableColorings.propTypes = {
+  userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+const HeaderGuessAndResult = () => (
+  <>
+    <th>Guess</th>
+    <th>Result</th>
+  </>
+);
+HeaderGuessAndResult.displayName = 'HeaderGuessAndResult';
+HeaderGuessAndResult.propTypes = {};
+
+const TableHeader = ({ userIds }) => (
   <thead>
     <tr>
       <th>Round</th>
-      {users.map((userId) => (
+      {userIds.map((userId) => (
         <th colSpan="2" key={userId}>
           {userId}
         </th>
@@ -19,18 +41,15 @@ const TableHeader = ({ users }) => (
     </tr>
     <tr>
       <th></th>
-      {users.map((userId) => (
-        <>
-          <th key={`${userId}-guess`}>Guess</th>
-          <th key={`${userId}-result`}>Result</th>
-        </>
+      {userIds.map((userId) => (
+        <HeaderGuessAndResult key={`${userId}-guess-and-result`} />
       ))}
     </tr>
   </thead>
 );
 TableHeader.displayName = 'TableHeader';
 TableHeader.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.string).isRequired,
+  userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const TableBody = ({ orderedGuesses }) => (
@@ -39,7 +58,9 @@ const TableBody = ({ orderedGuesses }) => (
       <GuessRow
         key={roundNum}
         idx={roundNum}
-        round={orderedGuesses.map((allGuesses) => allGuesses[roundNum])}
+        round={orderedGuesses.map(
+          (allGuesses) => allGuesses[allGuesses.length - 1 - roundNum]
+        )}
       />
     ))}
   </tbody>
@@ -55,7 +76,8 @@ export const GuessTable = ({ guesses }) => {
   const orderedGuesses = userIds.map((userId) => guesses[userId]);
   return (
     <table className="GuessTable">
-      <TableHeader users={userIds} />
+      <TableColorings userIds={userIds} />
+      <TableHeader userIds={userIds} />
       <TableBody orderedGuesses={orderedGuesses} />
     </table>
   );

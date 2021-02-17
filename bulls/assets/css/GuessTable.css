@@ -1,3 +1,11 @@
 .GuessTable {
-  width: 50vw;
+  width: 80vw;
+}
+
+.even {
+  background-color: #d3d3d3;
+}
+
+th {
+  text-align: center;
 }
