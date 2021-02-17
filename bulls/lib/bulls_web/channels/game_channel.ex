@@ -63,6 +63,25 @@ defmodule BullsWeb.GameChannel do
     {:noreply, socket}
   end
 
+  intercept ["guess"]
+
+  @impl true
+  def handle_out("guess", full_view, socket) do
+    %{play_state: play_state, guesses: guesses, this_round: this_round} = full_view
+    user_id = socket.assigns[:user_id]
+
+    current_guess =
+      if Map.has_key?(this_round, user_id) do
+        this_round[user_id]
+      else
+        nil
+      end
+
+    user_view = %{play_state: play_state, guesses: guesses, current_guess: current_guess}
+    push(socket, "guess", user_view)
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   # defp authorized?(_payload) do
   #   true
