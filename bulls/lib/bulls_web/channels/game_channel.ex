@@ -1,5 +1,4 @@
 defmodule BullsWeb.GameChannel do
-  require Logger
   use BullsWeb, :channel
 
   alias Bulls.GameManager
@@ -9,7 +8,6 @@ defmodule BullsWeb.GameChannel do
     socket = socket |> assign(:name, name) |> assign(:user_id, user_id)
     GameManager.setup()
     GameManager.start(name)
-    Logger.debug("point 1")
     {:ok, view} = GameManager.add_player(name, user_id, "OBSERVER")
     {:ok, view, socket}
   end

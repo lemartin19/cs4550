@@ -73,7 +73,21 @@ PlayerStatuses.propTypes = {
   numReady: PropTypes.number.isRequired,
 };
 
-export const GameSetup = ({ numPlayers, numReady }) => {
+const PreviousWinners = ({ winners }) => {
+  if (winners.length === 0) return null;
+  return (
+    <p>
+      Previous round winner{winners.length === 1 ? '' : 's'}:{' '}
+      {winners.join(', ')}
+    </p>
+  );
+};
+PreviousWinners.displayName = 'PreviousWinners';
+PreviousWinners.propTypes = {
+  winners: PropTypes.arrayOf(PropTypes.string),
+};
+
+export const GameSetup = ({ numPlayers, numReady, winners }) => {
   const {
     disabled,
     showReadyToggle,
@@ -94,6 +108,7 @@ export const GameSetup = ({ numPlayers, numReady }) => {
         showToggle={showReadyToggle}
       />
       <PlayerStatuses numPlayers={numPlayers} numReady={numReady} />
+      <PreviousWinners winners={winners} />
     </div>
   );
 };
@@ -105,9 +120,10 @@ GameSetup.propTypes = {
     type: PropTypes.oneOf(Object.keys(PlayerTypes)).isRequired,
     ready: PropTypes.bool.isRequired,
   }),
+  winners: PropTypes.arrayOf(PropTypes.string),
 };
 GameSetup.defaultProps = {
   numPlayers: 0,
   numReady: 0,
-  player: { type: PlayerTypes.OBSERVER, ready: false },
+  winners: [],
 };
