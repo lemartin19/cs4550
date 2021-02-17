@@ -72,7 +72,14 @@ defmodule Bulls.Game do
         this_round,
         guesses,
         fn {user_id, guess}, acc ->
-          to_add = %{guess: guess, result: bulls_and_cows(secret, guess)}
+          result =
+            if guess != "PASS" do
+              bulls_and_cows(secret, guess)
+            else
+              [nil, nil, nil, nil]
+            end
+
+          to_add = %{guess: guess, result: result}
           {:ok, previous_guesses} = Map.fetch(acc, user_id)
           %{acc | user_id => [to_add | previous_guesses]}
         end
@@ -108,13 +115,14 @@ defmodule Bulls.Game do
   end
 
   def is_valid_guess(this_round, user_id, guess) do
-    !Map.has_key?(this_round, user_id) &&
-      String.length(guess) == 4 &&
-      guess
-      |> split_and_strip
-      |> Enum.uniq()
-      |> Enum.count()
-      |> (fn count -> count == 4 end).()
+    (!Map.has_key?(this_round, user_id) &&
+       guess == "PASS") ||
+      (String.length(guess) == 4 &&
+         guess
+         |> split_and_strip
+         |> Enum.uniq()
+         |> Enum.count()
+         |> (fn count -> count == 4 end).())
   end
 
   def split_and_strip(string) do

@@ -6,7 +6,14 @@ import PropTypes from 'prop-types';
 import { useGuessInput } from '../hooks/useGuessInput';
 
 export const GuessInput = ({ makeGuess }) => {
-  const { formContent, error, onChange, onSubmit, onKeyPress } = useGuessInput({
+  const {
+    formContent,
+    error,
+    onChange,
+    onSubmit,
+    onKeyPress,
+    passTurn,
+  } = useGuessInput({
     makeGuess,
   });
   return (
@@ -20,6 +27,7 @@ export const GuessInput = ({ makeGuess }) => {
       />
       <p>{error}</p>
       <input type="submit" onClick={onSubmit} disabled={!!error} />
+      <button onClick={passTurn}>Pass</button>
     </div>
   );
 };

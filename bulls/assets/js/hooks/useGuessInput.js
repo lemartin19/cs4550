@@ -33,5 +33,7 @@ export const useGuessInput = ({ makeGuess }) => {
     which === 13 ? onSubmit() : null
   );
 
-  return { formContent, error, onChange, onSubmit, onKeyPress };
+  const passTurn = useCallback(() => makeGuess('PASS'));
+
+  return { formContent, error, onChange, onSubmit, onKeyPress, passTurn };
 };
