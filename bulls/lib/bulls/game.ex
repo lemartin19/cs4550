@@ -12,15 +12,11 @@ defmodule Bulls.Game do
         end
       )
 
-    %{this_round: %{}, guesses: guesses, secret: make_secret()}
+    %{this_round: %{}, guesses: guesses, secret: make_secret(), time_left: 30}
   end
 
-  defp is_playing(%{guesses: guesses}, user_id) do
-    Map.has_key?(guesses, user_id)
-  end
-
-  def view(%{guesses: guesses, this_round: this_round}) do
-    %{play_state: "PLAY", guesses: guesses, this_round: this_round}
+  def view(%{guesses: guesses, this_round: this_round, time_left: time_left}) do
+    %{play_state: "PLAY", guesses: guesses, this_round: this_round, time_left: time_left}
   end
 
   defp make_secret() do
@@ -39,6 +35,10 @@ defmodule Bulls.Game do
     end
   end
 
+  defp is_playing(%{guesses: guesses}, user_id) do
+    Map.has_key?(guesses, user_id)
+  end
+
   defp check_all_guesses(state) do
     %{this_round: this_round, guesses: guesses} = state
 
@@ -49,43 +49,56 @@ defmodule Bulls.Game do
     end
   end
 
-  defp all_guesses_in(%{this_round: this_round, guesses: guesses, secret: secret}) do
-    same_as_secret = fn {_, guess} -> guess == secret end
+  defp all_guesses_in(state) do
+    same_as_secret = fn {_, guess} -> guess == state.secret end
 
-    if Enum.any?(this_round, same_as_secret) do
-      end_game(this_round, same_as_secret)
+    if Enum.any?(state.this_round, same_as_secret) do
+      end_game(state, same_as_secret)
     else
-      combine_guesses(this_round, guesses, secret)
+      combine_guesses(state)
     end
   end
 
-  defp end_game(this_round, same_as_secret) do
+  defp end_game(%{this_round: this_round}, same_as_secret) do
     this_round
     |> Enum.filter(same_as_secret)
     |> Enum.map(fn {user_id, _} -> user_id end)
     |> Bulls.Setup.new()
   end
 
-  defp combine_guesses(this_round, guesses, secret) do
+  defp combine_guesses(state) do
+    %{secret: secret, guesses: guesses, this_round: this_round} = state
+
     new_guesses =
       Enum.reduce(
-        this_round,
         guesses,
-        fn {user_id, guess}, acc ->
-          result =
-            if guess != "PASS" do
-              bulls_and_cows(secret, guess)
-            else
-              [nil, nil, nil, nil]
-            end
-
-          to_add = %{guess: guess, result: result}
+        guesses,
+        fn {user_id, _}, acc ->
+          guess = get_guess_or_pass(this_round, user_id)
+          result = get_result(guess, secret)
           {:ok, previous_guesses} = Map.fetch(acc, user_id)
-          %{acc | user_id => [to_add | previous_guesses]}
+          %{acc | user_id => [%{guess: guess, result: result} | previous_guesses]}
         end
       )
 
-    %{secret: secret, guesses: new_guesses, this_round: %{}}
+    %{secret: secret, guesses: new_guesses, this_round: %{}, time_left: 30}
+  end
+
+  defp get_guess_or_pass(this_round, user_id) do
+    if Map.has_key?(this_round, user_id) do
+      {:ok, val} = Map.fetch(this_round, user_id)
+      val
+    else
+      "PASS"
+    end
+  end
+
+  defp get_result(guess, secret) do
+    if guess != "PASS" do
+      bulls_and_cows(secret, guess)
+    else
+      [nil, nil, nil, nil]
+    end
   end
 
   def add_guess(%{this_round: this_round}, user_id, guess) do
@@ -125,7 +138,17 @@ defmodule Bulls.Game do
          |> (fn count -> count == 4 end).())
   end
 
-  def split_and_strip(string) do
+  def one_second_passed(game) do
+    %{time_left: time_left} = game
+
+    if time_left == 1 do
+      all_guesses_in(game)
+    else
+      %{game | time_left: time_left - 1}
+    end
+  end
+
+  defp split_and_strip(string) do
     string |> String.split("") |> Enum.filter(&(&1 != ""))
   end
 end

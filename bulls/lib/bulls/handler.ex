@@ -40,4 +40,12 @@ defmodule Bulls.Handler do
   def make_guess(game, user_id, guess) do
     Game.make_guess(game, user_id, guess)
   end
+
+  def one_second_passed(%{people: people, winners: winners}) do
+    %{people: people, winners: winners}
+  end
+
+  def one_second_passed(game) do
+    Game.one_second_passed(game)
+  end
 end

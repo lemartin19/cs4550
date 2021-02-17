@@ -16,10 +16,4 @@ defmodule Bulls.BackupAgent do
       Map.get(state, name)
     end)
   end
-
-  def update(name, updateFn) do
-    updated = name |> get() |> updateFn.()
-    put(name, updated)
-    updated
-  end
 end
