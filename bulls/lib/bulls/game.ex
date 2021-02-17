@@ -93,12 +93,12 @@ defmodule Bulls.Game do
     end
   end
 
+  defp get_result("PASS", _) do
+    [nil, nil, nil, nil]
+  end
+
   defp get_result(guess, secret) do
-    if guess != "PASS" do
-      bulls_and_cows(secret, guess)
-    else
-      [nil, nil, nil, nil]
-    end
+    bulls_and_cows(secret, guess)
   end
 
   def add_guess(%{this_round: this_round}, user_id, guess) do
