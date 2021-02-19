@@ -12,24 +12,18 @@ defmodule Bulls.UserAgent do
   end
 
   def incWin(name) do
-    {win, loss} =
-      Agent.get(__MODULE__, fn state ->
-        Map.get(state, name)
-      end)
-
     Agent.update(__MODULE__, fn state ->
-      Map.put(state, name, {win + 1, loss})
+      Map.update(state, name, %{wins: 0, losses: 0}, fn %{wins: wins, losses: losses} ->
+        %{wins: wins + 1, losses: losses}
+      end)
     end)
   end
 
   def incLoss(name) do
-    {win, loss} =
-      Agent.get(__MODULE__, fn state ->
-        Map.get(state, name)
-      end)
-
     Agent.update(__MODULE__, fn state ->
-      Map.put(state, name, {win, loss + 1})
+      Map.update(state, name, %{wins: 0, losses: 0}, fn %{wins: wins, losses: losses} ->
+        %{wins: wins, losses: losses + 1}
+      end)
     end)
   end
 
@@ -38,8 +32,8 @@ defmodule Bulls.UserAgent do
       if Map.has_key?(state, name) do
         Map.get(state, name)
       else
-        Map.put(state, name, {0, 0})
-        {0, 0}
+        Map.put(state, name, %{wins: 0, losses: 0})
+        %{wins: 0, losses: 0}
       end
     end)
   end

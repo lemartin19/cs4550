@@ -18,7 +18,7 @@ let state = {};
 let callback = null;
 
 const stateUpdate = (newState) => {
-  state = Object.assign(state, ...newState);
+  state = { ...state, ...newState };
   if (callback) {
     callback(state);
   }

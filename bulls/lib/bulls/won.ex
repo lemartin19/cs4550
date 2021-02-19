@@ -8,6 +8,14 @@ defmodule Bulls.Won do
       |> Enum.filter(fn {_, guess} -> guess == secret end)
       |> Enum.map(fn {user_id, _} -> user_id end)
 
+    Enum.map(this_round, fn {user_id, guess} ->
+      if guess == secret do
+        Bulls.UserAgent.incWin(user_id)
+      else
+        Bulls.UserAgent.incLoss(user_id)
+      end
+    end)
+
     %{guesses: guesses, winners: winners}
   end
 

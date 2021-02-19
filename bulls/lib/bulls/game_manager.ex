@@ -64,10 +64,15 @@ defmodule Bulls.GameManager do
 
   def handle_info(:time_pass, %{name: name, game: game}) do
     Process.send_after(self(), :time_pass, 1_000)
-    game = Handler.one_second_passed(game)
-    BackupAgent.put(name, game)
-    BullsWeb.Endpoint.broadcast!("game:" <> name, "time-pass", game)
-    {:noreply, %{name: name, game: game}}
+    {broadcast, game} = Handler.one_second_passed(game)
+
+    if broadcast do
+      BullsWeb.Endpoint.broadcast!("game:" <> name, "time-pass", game)
+      BackupAgent.put(name, game)
+      {:noreply, %{name: name, game: game}}
+    else
+      {:noreply, %{name: name, game: game}}
+    end
   end
 
   def handle_call({:add_player, user_id, type}, _from, %{name: name, game: game}) do

@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useGameSetup } from '../hooks/useGameSetup';
 import { PlayerTypes } from '../constants/GamePlayConstants';
+import { MaybeLeaderboard } from './Leaderboard';
 
 const TypePicker = ({ disabled, playerType, setPlayerType }) => {
   return (
@@ -87,7 +88,7 @@ PreviousWinners.propTypes = {
   winners: PropTypes.arrayOf(PropTypes.string),
 };
 
-export const Setup = ({ numPlayers, numReady, winners }) => {
+export const Setup = ({ numPlayers, numReady, winners, records }) => {
   const {
     disabled,
     showReadyToggle,
@@ -109,6 +110,7 @@ export const Setup = ({ numPlayers, numReady, winners }) => {
       />
       <PlayerStatuses numPlayers={numPlayers} numReady={numReady} />
       <PreviousWinners winners={winners} />
+      <MaybeLeaderboard records={records} />
     </div>
   );
 };
@@ -120,6 +122,7 @@ Setup.propTypes = {
     type: PropTypes.oneOf(Object.keys(PlayerTypes)).isRequired,
     ready: PropTypes.bool.isRequired,
   }),
+  records: PropTypes.object.isRequired,
   winners: PropTypes.arrayOf(PropTypes.string),
 };
 Setup.defaultProps = {

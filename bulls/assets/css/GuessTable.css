@@ -2,6 +2,10 @@
   width: 80vw;
 }
 
+.winner {
+  background-color: gold;
+}
+
 .even {
   background-color: #d3d3d3;
 }

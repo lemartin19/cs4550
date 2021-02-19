@@ -25,7 +25,7 @@ defmodule Bulls.Setup do
   end
 
   defp get_record(_, true) do
-    {0, 0}
+    %{wins: 0, losses: 0}
   end
 
   defp get_record(user_id, _) do

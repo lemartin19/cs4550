@@ -34,6 +34,32 @@ defmodule Bulls.Handler do
     Game.view(game)
   end
 
+  def view(%{play_state: "WON", guesses: guesses, winners: winners}, _user_id) do
+    %{play_state: "WON", guesses: guesses, winners: winners}
+  end
+
+  def view(%{play_state: "PLAY", guesses: guesses, this_round: this_round}, user_id) do
+    current_guess =
+      if Map.has_key?(this_round, user_id) do
+        this_round[user_id]
+      else
+        nil
+      end
+
+    %{play_state: "PLAY", guesses: guesses, current_guess: current_guess}
+  end
+
+  def view(full_view, user_id) do
+    person =
+      if Map.has_key?(full_view.person, user_id) do
+        full_view.person[user_id]
+      else
+        %{type: "OBSERVER", ready: false}
+      end
+
+    %{full_view | person: person}
+  end
+
   def add_player(%{people: people, winners: winners, records: records}, user_id, type) do
     Setup.add_player(%{people: people, winners: winners, records: records}, user_id, type)
   end
@@ -42,8 +68,8 @@ defmodule Bulls.Handler do
     game
   end
 
-  def mark_player_ready(%{people: people, winners: winners}, user_id) do
-    Setup.mark_player_ready(%{people: people, winners: winners}, user_id)
+  def mark_player_ready(%{people: people, winners: winners, records: records}, user_id) do
+    Setup.mark_player_ready(%{people: people, winners: winners, records: records}, user_id)
   end
 
   def mark_player_ready(game, _) do
@@ -63,14 +89,14 @@ defmodule Bulls.Handler do
   end
 
   def one_second_passed(%{people: people, winners: winners, records: records}) do
-    %{people: people, winners: winners, records: records}
+    {false, %{people: people, winners: winners, records: records}}
   end
 
   def one_second_passed(%{guesses: guesses, winners: winners}) do
-    %{guesses: guesses, winners: winners}
+    {false, %{guesses: guesses, winners: winners}}
   end
 
   def one_second_passed(game) do
-    Game.one_second_passed(game)
+    {true, Game.one_second_passed(game)}
   end
 end

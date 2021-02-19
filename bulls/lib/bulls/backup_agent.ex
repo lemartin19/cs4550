@@ -5,6 +5,10 @@ defmodule Bulls.BackupAgent do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
   end
 
+  def is_started(name) do
+    Agent.get(__MODULE__, fn state -> Map.has_key?(state, name) end)
+  end
+
   def put(name, val) do
     Agent.update(__MODULE__, fn state ->
       Map.put(state, name, val)

@@ -8,7 +8,7 @@ export const Won = ({ winners, guesses }) => {
   return (
     <>
       <p>
-        Game over! Winner{winners.length > 1 ? 's' : ''}: {winners.join(',')}
+        Game over! Winner{winners.length > 1 ? 's' : ''}: {winners.join(', ')}
       </p>
       <GuessTable guesses={guesses} winners={winners} />
     </>
