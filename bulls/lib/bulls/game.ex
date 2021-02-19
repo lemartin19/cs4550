@@ -19,6 +19,11 @@ defmodule Bulls.Game do
     %{play_state: "PLAY", guesses: guesses, this_round: this_round, time_left: time_left}
   end
 
+  def reset(%{guesses: guesses}) do
+    players = Enum.map(guesses, fn {user_id, _} -> user_id end)
+    Bulls.Setup.new(players, [])
+  end
+
   defp make_secret() do
     ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
     |> Enum.shuffle()
@@ -51,37 +56,26 @@ defmodule Bulls.Game do
 
   defp all_guesses_in(state) do
     same_as_secret = fn {_, guess} -> guess == state.secret end
+    new_guesses = combine_guesses(state)
 
     if Enum.any?(state.this_round, same_as_secret) do
-      end_game(state, same_as_secret)
+      Bulls.Won.new(%{state | guesses: new_guesses})
     else
-      combine_guesses(state)
+      %{secret: state.secret, guesses: new_guesses, this_round: %{}, time_left: 30}
     end
   end
 
-  defp end_game(%{this_round: this_round}, same_as_secret) do
-    this_round
-    |> Enum.filter(same_as_secret)
-    |> Enum.map(fn {user_id, _} -> user_id end)
-    |> Bulls.Setup.new()
-  end
-
-  defp combine_guesses(state) do
-    %{secret: secret, guesses: guesses, this_round: this_round} = state
-
-    new_guesses =
-      Enum.reduce(
-        guesses,
-        guesses,
-        fn {user_id, _}, acc ->
-          guess = get_guess_or_pass(this_round, user_id)
-          result = get_result(guess, secret)
-          {:ok, previous_guesses} = Map.fetch(acc, user_id)
-          %{acc | user_id => [%{guess: guess, result: result} | previous_guesses]}
-        end
-      )
-
-    %{secret: secret, guesses: new_guesses, this_round: %{}, time_left: 30}
+  defp combine_guesses(%{secret: secret, guesses: guesses, this_round: this_round}) do
+    Enum.reduce(
+      guesses,
+      guesses,
+      fn {user_id, _}, acc ->
+        guess = get_guess_or_pass(this_round, user_id)
+        result = get_result(guess, secret)
+        {:ok, previous_guesses} = Map.fetch(acc, user_id)
+        %{acc | user_id => [%{guess: guess, result: result} | previous_guesses]}
+      end
+    )
   end
 
   defp get_guess_or_pass(this_round, user_id) do

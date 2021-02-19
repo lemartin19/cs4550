@@ -1,6 +1,6 @@
 'use es6';
 
-import '../../css/GameSetup.css';
+import '../../css/Setup.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useGameSetup } from '../hooks/useGameSetup';
@@ -87,7 +87,7 @@ PreviousWinners.propTypes = {
   winners: PropTypes.arrayOf(PropTypes.string),
 };
 
-export const GameSetup = ({ numPlayers, numReady, winners }) => {
+export const Setup = ({ numPlayers, numReady, winners }) => {
   const {
     disabled,
     showReadyToggle,
@@ -96,7 +96,7 @@ export const GameSetup = ({ numPlayers, numReady, winners }) => {
     playerIsReady,
   } = useGameSetup();
   return (
-    <div className="GameSetup">
+    <div className="Setup">
       <TypePicker
         disabled={disabled}
         playerType={playerType}
@@ -112,8 +112,8 @@ export const GameSetup = ({ numPlayers, numReady, winners }) => {
     </div>
   );
 };
-GameSetup.displayName = 'GameSetup';
-GameSetup.propTypes = {
+Setup.displayName = 'Setup';
+Setup.propTypes = {
   numPlayers: PropTypes.number,
   numReady: PropTypes.number,
   player: PropTypes.shape({
@@ -122,7 +122,7 @@ GameSetup.propTypes = {
   }),
   winners: PropTypes.arrayOf(PropTypes.string),
 };
-GameSetup.defaultProps = {
+Setup.defaultProps = {
   numPlayers: 0,
   numReady: 0,
   winners: [],

@@ -5,9 +5,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { GamePlayStates } from '../constants/GamePlayConstants';
 import { useInGame } from '../hooks/useInGame';
-import { GamePlay } from './GamePlay';
-import { GameSetup } from './GameSetup';
+import { Play } from './Play';
+import { Setup } from './Setup';
+import { Won } from './Won';
 import { useResetGameHeader } from '../hooks/useResetGameHeader';
+import { PlayStatePropType } from '../constants/GamePropTypes';
 
 const ResetGameHeader = ({ resetGameLogin }) => {
   const { resetGame, leaveGame } = useResetGameHeader({ resetGameLogin });
@@ -23,19 +25,54 @@ ResetGameHeader.propTypes = {
   resetGameLogin: PropTypes.func.isRequired,
 };
 
+const PlayState = ({ playState, setupProps, playProps, wonProps }) => {
+  switch (playState) {
+    case GamePlayStates.SETUP:
+      return <Setup {...setupProps} />;
+    case GamePlayStates.PLAY:
+      return <Play {...playProps} />;
+    case GamePlayStates.WON:
+      return <Won {...wonProps} />;
+    default:
+      return null;
+  }
+};
+PlayState.displayName = 'PlayState';
+PlayState.propTypes = {
+  playState: PlayStatePropType,
+  setupProps: PropTypes.shape({
+    numPlayers: PropTypes.number,
+    numReady: PropTypes.number,
+    player: PropTypes.object,
+    winners: PropTypes.arrayOf(PropTypes.string),
+  }),
+  playProps: PropTypes.shape({
+    userId: PropTypes.string,
+    currentGuess: PropTypes.string,
+    guesses: PropTypes.object,
+    makeGuess: PropTypes.func,
+  }),
+  wonProps: PropTypes.shape({
+    guesses: PropTypes.object,
+    winners: PropTypes.arrayOf(PropTypes.string),
+  }),
+};
+
 export const InGame = ({ gameId, userId, resetGameLogin }) => {
-  const { playState, playProps, setupProps } = useInGame({
+  const { playState, playProps, setupProps, wonProps } = useInGame({
     gameId,
     userId,
   });
+
   return (
     <>
       <ResetGameHeader resetGameLogin={resetGameLogin} />
-      {playState === GamePlayStates.PLAY ? (
-        <GamePlay {...playProps} />
-      ) : (
-        <GameSetup {...setupProps} />
-      )}
+      <PlayState
+        playState={playState}
+        setupProps={setupProps}
+        playProps={playProps}
+        wonProps={wonProps}
+      />
     </>
   );
 };

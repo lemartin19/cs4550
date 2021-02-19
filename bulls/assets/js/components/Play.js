@@ -19,7 +19,7 @@ MaybeGuessInput.propTypes = {
 };
 MaybeGuessInput.defaultProps = { currentGuess: null };
 
-export const GamePlay = ({ userId, currentGuess, guesses, makeGuess }) => (
+export const Play = ({ userId, currentGuess, guesses, makeGuess }) => (
   <>
     <MaybeGuessInput
       isObserver={!guesses[userId]}
@@ -29,14 +29,14 @@ export const GamePlay = ({ userId, currentGuess, guesses, makeGuess }) => (
     <GuessTable guesses={guesses} />
   </>
 );
-GamePlay.displayName = 'GamePlay';
-GamePlay.propTypes = {
+Play.displayName = 'Play';
+Play.propTypes = {
   currentGuess: PropTypes.string,
   guesses: PropTypes.object,
   makeGuess: PropTypes.func.isRequired,
   userId: PropTypes.string,
 };
-GamePlay.defaultProps = {
+Play.defaultProps = {
   currentGuess: null,
   guesses: [],
   userId: '',

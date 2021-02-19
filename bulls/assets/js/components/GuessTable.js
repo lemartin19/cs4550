@@ -7,17 +7,24 @@ import PropTypes from 'prop-types';
 import { GuessRow } from './GuessRow';
 import { GuessPropType } from '../constants/GamePropTypes';
 
-const TableColorings = ({ userIds }) => (
+const TableColorings = ({ userIds, winners }) => (
   <colgroup>
     <col />
-    {userIds.map((_, idx) => (
-      <col key={idx} span="2" className={idx % 2 === 0 ? 'even' : 'odd'}></col>
+    {userIds.map((userId, idx) => (
+      <col
+        key={idx}
+        span="2"
+        className={
+          winners.includes(userId) ? 'winner' : idx % 2 === 0 ? 'even' : 'odd'
+        }
+      ></col>
     ))}
   </colgroup>
 );
 TableColorings.displayName = 'TableColorings';
 TableColorings.propTypes = {
   userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  winners: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const HeaderGuessAndResult = () => (
@@ -54,15 +61,17 @@ TableHeader.propTypes = {
 
 const TableBody = ({ orderedGuesses }) => (
   <tbody>
-    {orderedGuesses[0].map((_, roundNum) => (
-      <GuessRow
-        key={roundNum}
-        idx={roundNum}
-        round={orderedGuesses.map(
-          (allGuesses) => allGuesses[allGuesses.length - 1 - roundNum]
-        )}
-      />
-    ))}
+    {orderedGuesses.length
+      ? orderedGuesses[0].map((_, roundNum) => (
+          <GuessRow
+            key={roundNum}
+            idx={roundNum}
+            round={orderedGuesses.map(
+              (allGuesses) => allGuesses[allGuesses.length - 1 - roundNum]
+            )}
+          />
+        ))
+      : null}
   </tbody>
 );
 TableBody.displayName = 'TableBody';
@@ -71,12 +80,12 @@ TableBody.propTypes = {
     .isRequired,
 };
 
-export const GuessTable = ({ guesses }) => {
+export const GuessTable = ({ guesses, winners }) => {
   const userIds = Object.keys(guesses);
   const orderedGuesses = userIds.map((userId) => guesses[userId]);
   return (
     <table className="GuessTable">
-      <TableColorings userIds={userIds} />
+      <TableColorings userIds={userIds} winners={winners} />
       <TableHeader userIds={userIds} />
       <TableBody orderedGuesses={orderedGuesses} />
     </table>
@@ -85,4 +94,6 @@ export const GuessTable = ({ guesses }) => {
 GuessTable.displayName = 'GuessTable';
 GuessTable.propTypes = {
   guesses: PropTypes.object.isRequired,
+  winners: PropTypes.arrayOf(PropTypes.string),
 };
+GuessTable.defaultProps = { winnners: [] };

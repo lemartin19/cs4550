@@ -32,5 +32,9 @@ export const useInGame = ({ gameId, userId }) => {
       player,
       winners,
     },
+    wonProps: {
+      winners,
+      guesses,
+    },
   };
 };

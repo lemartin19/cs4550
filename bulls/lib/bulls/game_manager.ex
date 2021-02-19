@@ -36,62 +36,65 @@ defmodule Bulls.GameManager do
 
   def start_link(name) do
     game = BackupAgent.get(name) || Handler.new()
-    GenServer.start_link(__MODULE__, game, name: reg(name))
+    GenServer.start_link(__MODULE__, %{name: name, game: game}, name: reg(name))
   end
 
   def add_player(name, user_id, type) do
-    GenServer.call(reg(name), {:add_player, name, user_id, type})
+    GenServer.call(reg(name), {:add_player, user_id, type})
   end
 
   def mark_player_ready(name, user_id) do
-    GenServer.call(reg(name), {:mark_player_ready, name, user_id})
+    GenServer.call(reg(name), {:mark_player_ready, user_id})
   end
 
   def guess(name, user_id, guess) do
-    GenServer.call(reg(name), {:guess, name, user_id, guess})
+    GenServer.call(reg(name), {:guess, user_id, guess})
   end
 
   def reset(name) do
-    GenServer.call(reg(name), {:reset, name})
+    GenServer.call(reg(name), :reset)
   end
 
   # Server
 
-  def init(game) do
+  def init(%{name: name, game: game}) do
     Process.send_after(self(), :time_pass, 1_000)
-    {:ok, game}
+    {:ok, %{name: name, game: game}}
   end
 
-  def handle_info(:time_pass, game) do
+  def handle_info(:time_pass, %{name: name, game: game}) do
     Process.send_after(self(), :time_pass, 1_000)
-    {:noreply, Handler.one_second_passed(game)}
+    game = Handler.one_second_passed(game)
+    BackupAgent.put(name, game)
+    BullsWeb.Endpoint.broadcast!("game:" <> name, "time_pass", game)
+    {:noreply, %{name: name, game: game}}
   end
 
-  def handle_call({:add_player, name, user_id, type}, _from, game) do
+  def handle_call({:add_player, user_id, type}, _from, %{name: name, game: game}) do
     game = Handler.add_player(game, user_id, type)
     BackupAgent.put(name, game)
     view = Handler.view(game)
-    {:reply, {:ok, view}, game}
+    {:reply, {:ok, view}, %{name: name, game: game}}
   end
 
-  def handle_call({:mark_player_ready, name, user_id}, _from, game) do
+  def handle_call({:mark_player_ready, user_id}, _from, %{name: name, game: game}) do
     game = Handler.mark_player_ready(game, user_id)
     BackupAgent.put(name, game)
     view = Handler.view(game)
-    {:reply, {:ok, view}, game}
+    {:reply, {:ok, view}, %{name: name, game: game}}
   end
 
-  def handle_call({:guess, name, user_id, guess}, _from, game) do
+  def handle_call({:guess, user_id, guess}, _from, %{name: name, game: game}) do
     game = Handler.make_guess(game, user_id, guess)
     BackupAgent.put(name, game)
     view = Handler.view(game)
-    {:reply, {:ok, view}, game}
+    {:reply, {:ok, view}, %{name: name, game: game}}
   end
 
-  def handle_call({:reset, name}, _from, _game) do
+  def handle_call(:reset, _from, %{name: name, game: _game}) do
     game = Handler.new()
     BackupAgent.put(name, game)
     view = Handler.view(game)
-    {:reply, {:ok, view}, game}
+    {:reply, {:ok, view}, %{name: name, game: game}}
   end
 end

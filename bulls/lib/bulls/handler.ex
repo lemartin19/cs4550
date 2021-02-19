@@ -9,8 +9,24 @@ defmodule Bulls.Handler do
     Setup.new()
   end
 
-  def view(%{people: people, winners: winners}) do
-    Setup.view(%{people: people, winners: winners})
+  def reset(%{people: people, winners: winners, records: records}) do
+    %{people: people, winners: winners, records: records}
+  end
+
+  def reset(%{guesses: guesses, winners: winners}) do
+    Bulls.Won.reset(%{guesses: guesses, winners: winners})
+  end
+
+  def reset(game) do
+    Bulls.Game.reset(game)
+  end
+
+  def view(%{people: people, winners: winners, records: records}) do
+    Setup.view(%{people: people, winners: winners, records: records})
+  end
+
+  def view(%{guesses: guesses, winners: winners}) do
+    Bulls.Won.view(%{guesses: guesses, winners: winners})
   end
 
   def view(game) do
@@ -37,12 +53,20 @@ defmodule Bulls.Handler do
     %{people: people, winners: winners}
   end
 
+  def make_guess(%{guesses: guesses, winners: winners}, _, _) do
+    %{guesses: guesses, winners: winners}
+  end
+
   def make_guess(game, user_id, guess) do
     Game.make_guess(game, user_id, guess)
   end
 
   def one_second_passed(%{people: people, winners: winners}) do
     %{people: people, winners: winners}
+  end
+
+  def one_second_passed(%{guesses: guesses, winners: winners}) do
+    %{guesses: guesses, winners: winners}
   end
 
   def one_second_passed(game) do
