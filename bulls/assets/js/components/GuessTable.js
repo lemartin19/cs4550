@@ -96,4 +96,4 @@ GuessTable.propTypes = {
   guesses: PropTypes.object.isRequired,
   winners: PropTypes.arrayOf(PropTypes.string),
 };
-GuessTable.defaultProps = { winnners: [] };
+GuessTable.defaultProps = { winners: [] };

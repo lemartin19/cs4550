@@ -4,6 +4,7 @@ defmodule Bulls.Handler do
 
   alias Bulls.Game
   alias Bulls.Setup
+  alias Bulls.Won
 
   def new do
     Setup.new()
@@ -14,11 +15,11 @@ defmodule Bulls.Handler do
   end
 
   def reset(%{guesses: guesses, winners: winners}) do
-    Bulls.Won.reset(%{guesses: guesses, winners: winners})
+    Won.reset(%{guesses: guesses, winners: winners})
   end
 
   def reset(game) do
-    Bulls.Game.reset(game)
+    Game.reset(game)
   end
 
   def view(%{people: people, winners: winners, records: records}) do
@@ -26,15 +27,15 @@ defmodule Bulls.Handler do
   end
 
   def view(%{guesses: guesses, winners: winners}) do
-    Bulls.Won.view(%{guesses: guesses, winners: winners})
+    Won.view(%{guesses: guesses, winners: winners})
   end
 
   def view(game) do
     Game.view(game)
   end
 
-  def add_player(%{people: people, winners: winners}, user_id, type) do
-    Setup.add_player(%{people: people, winners: winners}, user_id, type)
+  def add_player(%{people: people, winners: winners, records: records}, user_id, type) do
+    Setup.add_player(%{people: people, winners: winners, records: records}, user_id, type)
   end
 
   def add_player(game, _, _) do
@@ -49,8 +50,8 @@ defmodule Bulls.Handler do
     game
   end
 
-  def make_guess(%{people: people, winners: winners}, _, _) do
-    %{people: people, winners: winners}
+  def make_guess(%{people: people, winners: winners, records: records}, _, _) do
+    %{people: people, winners: winners, records: records}
   end
 
   def make_guess(%{guesses: guesses, winners: winners}, _, _) do
@@ -61,8 +62,8 @@ defmodule Bulls.Handler do
     Game.make_guess(game, user_id, guess)
   end
 
-  def one_second_passed(%{people: people, winners: winners}) do
-    %{people: people, winners: winners}
+  def one_second_passed(%{people: people, winners: winners, records: records}) do
+    %{people: people, winners: winners, records: records}
   end
 
   def one_second_passed(%{guesses: guesses, winners: winners}) do
