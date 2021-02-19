@@ -16,28 +16,32 @@ defmodule Bulls.GameTest do
 
   test "view" do
     game = Bulls.Game.new(["lmartin"])
-    assert Bulls.Game.view(game, "lmartin") == %{play_state: "PLAY", guesses: %{"lmartin" => []}}
+
+    assert Bulls.Game.view(game) == %{
+             play_state: "PLAY",
+             guesses: %{"lmartin" => []},
+             this_round: %{},
+             time_left: 30
+           }
 
     game = Bulls.Game.new(["lmartin", "lynnsey", "lynnz"])
 
-    assert Bulls.Game.view(game, "lmartin") == %{
+    assert Bulls.Game.view(game) == %{
              play_state: "PLAY",
-             guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []}
-           }
-
-    assert Bulls.Game.view(game, "other") == %{
-             play_state: "OBSERVER",
-             guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []}
+             guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []},
+             this_round: %{},
+             time_left: 30
            }
   end
 
   test "make_guess" do
-    state = %{this_round: %{}, guesses: %{"lmartin" => []}, secret: "6832"}
+    state = %{this_round: %{}, guesses: %{"lmartin" => []}, secret: "6832", time_left: 12}
 
-    assert Bulls.Game.make_guess(state, "lmartin", "1234") == %{
-             state
-             | guesses: %{"lmartin" => [%{guess: "1234", result: [nil, "COW", "BULL", nil]}]}
-           }
+    assert Bulls.Game.make_guess(state, "lmartin", "1234") ==
+             Map.merge(state, %{
+               time_left: 30,
+               guesses: %{"lmartin" => [%{guess: "1234", result: [nil, "COW", "BULL", nil]}]}
+             })
 
     assert Bulls.Game.make_guess(state, "lynnz", "1234") == state
     assert Bulls.Game.make_guess(state, "lmartin", "123") == state
@@ -56,13 +60,28 @@ defmodule Bulls.GameTest do
              ]
            }
 
-    assert Bulls.Game.make_guess(state, "lmartin", "6832") == Bulls.Setup.new(["lmartin"])
+    won_state = %{
+      secret: "6832",
+      time_left: 12,
+      this_round: %{"lmartin" => "6832"},
+      guesses: %{
+        "lmartin" => [
+          %{guess: "6832", result: ["BULL", "BULL", "BULL", "BULL"]},
+          %{guess: "5678", result: [nil, "COW", nil, "COW"]},
+          %{guess: "1234", result: [nil, "COW", "BULL", nil]}
+        ]
+      }
+    }
+
+    assert Bulls.Game.make_guess(state, "lmartin", "6832") ==
+             Bulls.Won.new(won_state)
 
     state =
       %{
         this_round: %{},
         guesses: %{"lmartin" => [], "lynnsey" => [], "lynnz" => []},
-        secret: "6832"
+        secret: "6832",
+        time_left: 12
       }
       |> Bulls.Game.make_guess("lynnz", "1234")
       |> Bulls.Game.make_guess("lmartin", "5678")
@@ -77,7 +96,7 @@ defmodule Bulls.GameTest do
            }
 
     assert Enum.count(state.guesses) == 3
-    assert Enum.all?(state.guesses, fn {key, guesses} -> Enum.count(guesses) == 1 end)
+    assert Enum.all?(state.guesses, fn {_, guesses} -> Enum.count(guesses) == 1 end)
     assert Bulls.Game.make_guess(state, "other", "9034") == state
     assert Bulls.Game.make_guess(state, "lmartin", "9034").this_round == %{"lmartin" => "9034"}
     assert Bulls.Game.make_guess(state, "lynnz", "9034").this_round == %{"lynnz" => "9034"}
@@ -89,11 +108,26 @@ defmodule Bulls.GameTest do
 
     assert Bulls.Game.make_guess(state, "lmartin", "9034") == state
 
-    assert Bulls.Game.make_guess(state, "lynnsey", "6832") ==
-             Bulls.Setup.new(["lmartin", "lynnsey"])
+    won_state =
+      state
+      |> Map.update!(:this_round, fn this_round -> Map.put(this_round, "lynnsey", "6832") end)
+      |> Map.put(:guesses, %{
+        "lmartin" => [
+          %{guess: "6832", result: ["BULL", "BULL", "BULL", "BULL"]},
+          %{guess: "5678", result: [nil, "COW", nil, "COW"]}
+        ],
+        "lynnsey" => [
+          %{guess: "6832", result: ["BULL", "BULL", "BULL", "BULL"]},
+          %{guess: "9012", result: [nil, nil, nil, "BULL"]}
+        ],
+        "lynnz" => [
+          %{guess: "1234", result: [nil, "COW", "BULL", nil]},
+          %{guess: "1234", result: [nil, "COW", "BULL", nil]}
+        ]
+      })
 
-    assert Bulls.Game.make_guess(state, "lynnsey", "6834") ==
-             Bulls.Setup.new(["lmartin"])
+    assert Bulls.Game.make_guess(state, "lynnsey", "6832") ==
+             Bulls.Won.new(won_state)
   end
 
   test "add_guess" do
@@ -124,10 +158,12 @@ defmodule Bulls.GameTest do
   test "is_valid_guess" do
     assert Bulls.Game.is_valid_guess(%{}, "lmartin", "1234")
     assert Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "1234")
+    assert Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "PASS")
     assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lmartin", "1234")
     assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "123")
     assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "12345")
     assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "1233")
     assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lynnz", "12344")
+    assert not Bulls.Game.is_valid_guess(%{"lmartin" => "1234"}, "lmartin", "PASS")
   end
 end

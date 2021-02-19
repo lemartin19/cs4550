@@ -121,15 +121,18 @@ defmodule Bulls.Game do
     end
   end
 
+  def is_valid_guess(this_round, user_id, "PASS") do
+    !Map.has_key?(this_round, user_id)
+  end
+
   def is_valid_guess(this_round, user_id, guess) do
-    (!Map.has_key?(this_round, user_id) &&
-       guess == "PASS") ||
-      (String.length(guess) == 4 &&
-         guess
-         |> split_and_strip
-         |> Enum.uniq()
-         |> Enum.count()
-         |> (fn count -> count == 4 end).())
+    !Map.has_key?(this_round, user_id) &&
+      String.length(guess) == 4 &&
+      guess
+      |> split_and_strip
+      |> Enum.uniq()
+      |> Enum.count()
+      |> (fn count -> count == 4 end).()
   end
 
   def one_second_passed(game) do

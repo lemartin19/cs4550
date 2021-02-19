@@ -7,17 +7,29 @@ defmodule Bulls.Setup do
   end
 
   def new(players, winners) do
+    new(players, winners, false)
+  end
+
+  def new(players, winners, test) do
     people =
       Enum.reduce(players, %{}, fn user_id, acc ->
-        %{acc | user_id => %{type: "PLAYER", ready: false}}
+        Map.put(acc, user_id, %{type: "PLAYER", ready: false})
       end)
 
     records =
       Enum.reduce(players, %{}, fn user_id, acc ->
-        %{acc | user_id => Bulls.UserAgent.get(user_id)}
+        Map.put(acc, user_id, get_record(user_id, test))
       end)
 
     %{people: people, winners: winners, records: records}
+  end
+
+  defp get_record(_, true) do
+    {0, 0}
+  end
+
+  defp get_record(user_id, _) do
+    Bulls.UserAgent.get(user_id)
   end
 
   defp is_player({_, %{type: type}}) do
@@ -31,6 +43,7 @@ defmodule Bulls.Setup do
   def view(%{people: people, winners: winners, records: records}) do
     %{
       play_state: "SETUP",
+      person: people,
       num_players_ready: people |> Enum.filter(&is_player(&1)) |> Enum.count(&is_ready(&1)),
       num_players: Enum.count(people, &is_player(&1)),
       winners: winners,

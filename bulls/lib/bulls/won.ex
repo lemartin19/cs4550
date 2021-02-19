@@ -17,7 +17,6 @@ defmodule Bulls.Won do
 
   def reset(%{guesses: guesses, winners: winners}) do
     players = Enum.map(guesses, fn {user_id, _} -> user_id end)
-
     Bulls.Setup.new(players, winners)
   end
 end

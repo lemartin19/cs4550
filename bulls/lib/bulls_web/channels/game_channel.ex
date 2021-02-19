@@ -51,7 +51,7 @@ defmodule BullsWeb.GameChannel do
     {:noreply, socket}
   end
 
-  intercept ["guess"]
+  intercept ["guess", "player-type"]
 
   @impl true
   def handle_out("guess", full_view, socket) do
@@ -67,6 +67,22 @@ defmodule BullsWeb.GameChannel do
 
     user_view = %{play_state: play_state, guesses: guesses, current_guess: current_guess}
     push(socket, "guess", user_view)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_out("player-type", full_view, socket) do
+    user_id = socket.assigns[:user_id]
+
+    person =
+      if Map.has_key?(full_view.person, user_id) do
+        full_view.person[user_id]
+      else
+        %{type: "OBSERVER", ready: false}
+      end
+
+    user_view = %{full_view | person: person}
+    push(socket, "player-type", user_view)
     {:noreply, socket}
   end
 

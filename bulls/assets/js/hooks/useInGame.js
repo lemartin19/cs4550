@@ -16,6 +16,7 @@ export const useInGame = ({ gameId, userId }) => {
     num_players_ready,
     winners,
     player,
+    records,
   } = state;
 
   return {
@@ -31,6 +32,7 @@ export const useInGame = ({ gameId, userId }) => {
       numReady: num_players_ready,
       player,
       winners,
+      records,
     },
     wonProps: {
       winners,

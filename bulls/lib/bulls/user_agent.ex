@@ -35,7 +35,12 @@ defmodule Bulls.UserAgent do
 
   def get(name) do
     Agent.get(__MODULE__, fn state ->
-      Map.get(state, name)
+      if Map.has_key?(state, name) do
+        Map.get(state, name)
+      else
+        Map.put(state, name, {0, 0})
+        {0, 0}
+      end
     end)
   end
 end
