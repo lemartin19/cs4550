@@ -18,7 +18,7 @@ let state = {};
 let callback = null;
 
 const stateUpdate = (newState) => {
-  state = newState;
+  state = Object.assign(state, ...newState);
   if (callback) {
     callback(state);
   }
@@ -35,6 +35,7 @@ export const joinChannel = (gameId, userId, requestCallback) => {
 
   channel.on('player-type', stateUpdate);
   channel.on('player-ready', stateUpdate);
+  channel.on('time-pass', stateUpdate);
   channel.on('guess', stateUpdate);
   channel.on('reset', stateUpdate);
 

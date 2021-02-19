@@ -66,7 +66,7 @@ defmodule Bulls.GameManager do
     Process.send_after(self(), :time_pass, 1_000)
     game = Handler.one_second_passed(game)
     BackupAgent.put(name, game)
-    BullsWeb.Endpoint.broadcast!("game:" <> name, "time_pass", game)
+    BullsWeb.Endpoint.broadcast!("game:" <> name, "time-pass", game)
     {:noreply, %{name: name, game: game}}
   end
 

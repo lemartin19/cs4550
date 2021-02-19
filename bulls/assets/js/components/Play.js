@@ -19,8 +19,15 @@ MaybeGuessInput.propTypes = {
 };
 MaybeGuessInput.defaultProps = { currentGuess: null };
 
-export const Play = ({ userId, currentGuess, guesses, makeGuess }) => (
+export const Play = ({
+  userId,
+  timeLeft,
+  currentGuess,
+  guesses,
+  makeGuess,
+}) => (
   <>
+    <p>{timeLeft} seconds to make a guess</p>
     <MaybeGuessInput
       isObserver={!guesses[userId]}
       currentGuess={currentGuess}
@@ -34,6 +41,7 @@ Play.propTypes = {
   currentGuess: PropTypes.string,
   guesses: PropTypes.object,
   makeGuess: PropTypes.func.isRequired,
+  timeLeft: PropTypes.number.isRequired,
   userId: PropTypes.string,
 };
 Play.defaultProps = {

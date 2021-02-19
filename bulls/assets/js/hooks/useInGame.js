@@ -17,6 +17,7 @@ export const useInGame = ({ gameId, userId }) => {
     winners,
     player,
     records,
+    time_left,
   } = state;
 
   return {
@@ -25,6 +26,7 @@ export const useInGame = ({ gameId, userId }) => {
       userId,
       currentGuess: current_guess,
       guesses,
+      timeLeft: time_left,
       makeGuess: channelGuess,
     },
     setupProps: {
