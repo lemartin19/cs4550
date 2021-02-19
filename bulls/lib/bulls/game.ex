@@ -1,6 +1,7 @@
 defmodule Bulls.Game do
   # Handle state for bulls game
   @moduledoc false
+  # require Logger
 
   def new(players) do
     guesses =
@@ -15,7 +16,8 @@ defmodule Bulls.Game do
     %{this_round: %{}, guesses: guesses, secret: make_secret(), time_left: 30}
   end
 
-  def view(%{guesses: guesses, this_round: this_round, time_left: time_left}) do
+  def view(%{guesses: guesses, this_round: this_round, time_left: time_left, secret: secret}) do
+    # Logger.debug("********** SECRET: " <> secret)
     %{play_state: "PLAY", guesses: guesses, this_round: this_round, time_left: time_left}
   end
 

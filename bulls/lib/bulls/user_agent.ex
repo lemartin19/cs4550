@@ -13,7 +13,7 @@ defmodule Bulls.UserAgent do
 
   def incWin(name) do
     Agent.update(__MODULE__, fn state ->
-      Map.update(state, name, %{wins: 0, losses: 0}, fn %{wins: wins, losses: losses} ->
+      Map.update(state, name, %{wins: 1, losses: 0}, fn %{wins: wins, losses: losses} ->
         %{wins: wins + 1, losses: losses}
       end)
     end)
@@ -21,7 +21,7 @@ defmodule Bulls.UserAgent do
 
   def incLoss(name) do
     Agent.update(__MODULE__, fn state ->
-      Map.update(state, name, %{wins: 0, losses: 0}, fn %{wins: wins, losses: losses} ->
+      Map.update(state, name, %{wins: 0, losses: 1}, fn %{wins: wins, losses: losses} ->
         %{wins: wins, losses: losses + 1}
       end)
     end)

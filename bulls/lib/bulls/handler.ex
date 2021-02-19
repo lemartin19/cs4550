@@ -10,8 +10,8 @@ defmodule Bulls.Handler do
     Setup.new()
   end
 
-  def reset(%{people: people, winners: winners, records: records}) do
-    %{people: people, winners: winners, records: records}
+  def reset(%{people: _, winners: _, records: _}) do
+    Setup.new()
   end
 
   def reset(%{guesses: guesses, winners: winners}) do
@@ -38,7 +38,10 @@ defmodule Bulls.Handler do
     %{play_state: "WON", guesses: guesses, winners: winners}
   end
 
-  def view(%{play_state: "PLAY", guesses: guesses, this_round: this_round}, user_id) do
+  def view(
+        %{play_state: "PLAY", guesses: guesses, this_round: this_round, time_left: time_left},
+        user_id
+      ) do
     current_guess =
       if Map.has_key?(this_round, user_id) do
         this_round[user_id]
@@ -46,7 +49,7 @@ defmodule Bulls.Handler do
         nil
       end
 
-    %{play_state: "PLAY", guesses: guesses, current_guess: current_guess}
+    %{play_state: "PLAY", guesses: guesses, current_guess: current_guess, time_left: time_left}
   end
 
   def view(full_view, user_id) do

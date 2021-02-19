@@ -1,5 +1,4 @@
 defmodule Bulls.GameManager do
-  require Logger
   use GenServer
 
   alias Bulls.Handler
@@ -67,7 +66,8 @@ defmodule Bulls.GameManager do
     {broadcast, game} = Handler.one_second_passed(game)
 
     if broadcast do
-      BullsWeb.Endpoint.broadcast!("game:" <> name, "time-pass", game)
+      view = Handler.view(game)
+      BullsWeb.Endpoint.broadcast!("game:" <> name, "time-pass", view)
       BackupAgent.put(name, game)
       {:noreply, %{name: name, game: game}}
     else
@@ -96,8 +96,8 @@ defmodule Bulls.GameManager do
     {:reply, {:ok, view}, %{name: name, game: game}}
   end
 
-  def handle_call(:reset, _from, %{name: name, game: _game}) do
-    game = Handler.new()
+  def handle_call(:reset, _from, %{name: name, game: game}) do
+    game = Handler.reset(game)
     BackupAgent.put(name, game)
     view = Handler.view(game)
     {:reply, {:ok, view}, %{name: name, game: game}}

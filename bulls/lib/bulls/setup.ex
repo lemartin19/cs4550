@@ -11,17 +11,12 @@ defmodule Bulls.Setup do
   end
 
   def new(players, winners, test) do
-    people =
-      Enum.reduce(players, %{}, fn user_id, acc ->
-        Map.put(acc, user_id, %{type: "PLAYER", ready: false})
-      end)
-
     records =
       Enum.reduce(players, %{}, fn user_id, acc ->
         Map.put(acc, user_id, get_record(user_id, test))
       end)
 
-    %{people: people, winners: winners, records: records}
+    %{people: %{}, winners: winners, records: records}
   end
 
   defp get_record(_, true) do

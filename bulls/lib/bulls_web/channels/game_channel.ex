@@ -45,26 +45,17 @@ defmodule BullsWeb.GameChannel do
   def handle_in("reset", _payload, socket) do
     name = socket.assigns[:name]
     {:ok, view} = GameManager.reset(name)
-
     broadcast!(socket, "reset", view)
     {:noreply, socket}
   end
 
-  intercept ["guess", "player-type"]
+  intercept ["guess", "player-type", "time-pass"]
 
   @impl true
-  def handle_out("guess", full_view, socket) do
+  def handle_out(msg, full_view, socket) do
     user_id = socket.assigns[:user_id]
     user_view = Bulls.Handler.view(full_view, user_id)
-    push(socket, "guess", user_view)
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_out("player-type", full_view, socket) do
-    user_id = socket.assigns[:user_id]
-    user_view = Bulls.Handler.view(full_view, user_id)
-    push(socket, "player-type", user_view)
+    push(socket, msg, user_view)
     {:noreply, socket}
   end
 
