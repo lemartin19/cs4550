@@ -1,18 +1,21 @@
-"use es6";
+'use es6';
 
-import "../../css/GuessInput.css";
-import React, { useCallback } from "react";
-import PropTypes from "prop-types";
-import { useGuessInput } from "../hooks/useGuessInput";
+import '../../css/GuessInput.css';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useGuessInput } from '../hooks/useGuessInput';
 
-export const GuessInput = ({ setGuess }) => {
-  const { formContent, error, onChange, onSubmit } = useGuessInput({
-    setGuess,
+export const GuessInput = ({ makeGuess }) => {
+  const {
+    formContent,
+    error,
+    onChange,
+    onSubmit,
+    onKeyPress,
+    passTurn,
+  } = useGuessInput({
+    makeGuess,
   });
-
-  const onKeyPress = useCallback(({ which }) =>
-    which === 13 ? onSubmit() : null
-  );
   return (
     <div className="GuessInput">
       <input
@@ -24,10 +27,11 @@ export const GuessInput = ({ setGuess }) => {
       />
       <p>{error}</p>
       <input type="submit" onClick={onSubmit} disabled={!!error} />
+      <button onClick={passTurn}>Pass</button>
     </div>
   );
 };
-GuessInput.displayName = "GuessInput";
+GuessInput.displayName = 'GuessInput';
 GuessInput.propTypes = {
-  setGuess: PropTypes.func.isRequired,
+  makeGuess: PropTypes.func.isRequired,
 };

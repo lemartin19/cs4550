@@ -12,15 +12,18 @@ defmodule Bulls.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Bulls.PubSub},
       # Start the Endpoint (http/https)
-      BullsWeb.Endpoint
+      BullsWeb.Endpoint,
       # Start a worker by calling: Bulls.Worker.start_link(arg)
       # {Bulls.Worker, arg}
+      Bulls.BackupAgent,
+      Bulls.UserAgent
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Bulls.Supervisor]
     Supervisor.start_link(children, opts)
+    Bulls.GameManager.setup()
   end
 
   # Tell Phoenix to update the endpoint configuration

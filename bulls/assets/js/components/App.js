@@ -1,25 +1,29 @@
-"use es6";
+'use es6';
 
-import React from "react";
-import "../../css/App.css";
-import { PlayState } from "./PlayState";
-import { useApp } from "../hooks/useApp";
+import React from 'react';
+import '../../css/App.css';
+import { useGameLogin } from '../hooks/useGameLogin';
+import { InGame } from './InGame';
+import { PickGame } from './PickGame';
 
 const App = () => {
-  const { playState, guesses, resetGame, makeGuess } = useApp();
+  const { gameId, userId, setGameLogin, resetGameLogin } = useGameLogin();
 
   return (
     <div className="App">
-      <button onClick={resetGame}>Reset Game</button>
-      <PlayState
-        playState={playState}
-        guesses={guesses}
-        makeGuess={makeGuess}
-      />
+      {gameId && userId ? (
+        <InGame
+          gameId={gameId}
+          userId={userId}
+          resetGameLogin={resetGameLogin}
+        />
+      ) : (
+        <PickGame setGameLogin={setGameLogin} />
+      )}
     </div>
   );
 };
-App.displayName = "App";
+App.displayName = 'App';
 App.propTypes = {};
 
 export default App;

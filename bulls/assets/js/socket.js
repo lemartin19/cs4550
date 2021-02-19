@@ -6,52 +6,56 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import { Socket } from "phoenix";
+import { Socket } from 'phoenix';
 
-const socket = new Socket("/socket", { params: { token: "" } });
+const socket = new Socket('/socket', { params: { token: '' } });
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-const channel = socket.channel("game:1", {});
+let channel;
 
 let state = {};
 let callback = null;
 
 const stateUpdate = (newState) => {
-  state = newState;
+  state = { ...state, ...newState };
   if (callback) {
     callback(state);
   }
 };
 
-export const joinChannel = (requestCallback) => {
+export const joinChannel = (gameId, userId, requestCallback) => {
+  channel = socket.channel(`game:${gameId}`, { userId });
+  channel
+    .join()
+    .receive('ok', stateUpdate)
+    .receive('error', (resp) => {
+      console.log(`Unable to join game: ${gameId}`, resp);
+    });
+
+  channel.on('player-type', stateUpdate);
+  channel.on('player-ready', stateUpdate);
+  channel.on('time-pass', stateUpdate);
+  channel.on('guess', stateUpdate);
+  channel.on('reset', stateUpdate);
+
   callback = requestCallback;
   callback(state);
 };
 
-export const channelGuess = (guess) => {
-  channel
-    .push("guess", { guess })
-    .receive("ok", stateUpdate)
-    .receive("error", (err) => {
-      console.log("Unable to push: " + err);
-    });
-};
+export const addPlayer = (playerType) =>
+  channel.push('player-type', { playerType });
 
-export const channelReset = () => {
-  channel
-    .push("reset", {})
-    .receive("ok", stateUpdate)
-    .receive("error", (err) => {
-      console.log("Unable to push: " + err);
-    });
-};
+export const playerReady = () => channel.push('player-ready', {});
 
-channel
-  .join()
-  .receive("ok", stateUpdate)
-  .receive("error", (resp) => {
-    console.log("Unable to join", resp);
-  });
+export const channelGuess = (guess) => channel.push('guess', { guess });
+
+export const channelReset = () => channel.push('reset', {});
+
+export const leaveChannel = () => {
+  channel.leave();
+  channel = undefined;
+  stateUpdate({});
+};
 
 export default socket;

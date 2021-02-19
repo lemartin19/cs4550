@@ -1,0 +1,22 @@
+.Setup {
+  padding-top: 10px;
+  align-self: center;
+}
+
+.TypePicker {
+  display: flex;
+  flex-direction: column;
+}
+
+.ReadyToggle {
+  height: 10vh;
+}
+
+label {
+  display: inline;
+  padding-left: 4px;
+}
+
+p {
+  margin-bottom: 4px;
+}

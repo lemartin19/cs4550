@@ -15,19 +15,25 @@ const getError = (formContent) => {
   return null;
 };
 
-export const useGuessInput = ({ setGuess }) => {
+export const useGuessInput = ({ makeGuess }) => {
   const [formContent, setFormContent] = useState('');
 
   const error = useMemo(() => getError(formContent), [formContent]);
 
-  const onChange = useCallback(({ target }) => {
+  const onChange = ({ target }) => {
     setFormContent(target.value);
-  }, []);
+  };
 
   const onSubmit = useCallback(() => {
-    setGuess(formContent);
+    makeGuess(formContent);
     setFormContent('');
-  }, [setGuess, formContent]);
+  }, [makeGuess, formContent]);
 
-  return { formContent, error, onChange, onSubmit };
+  const onKeyPress = useCallback(({ which }) =>
+    which === 13 ? onSubmit() : null
+  );
+
+  const passTurn = useCallback(() => makeGuess('PASS'));
+
+  return { formContent, error, onChange, onSubmit, onKeyPress, passTurn };
 };
