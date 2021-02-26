@@ -18,6 +18,7 @@ export const PickGame = ({ setGameLogin }) => {
 
   return (
     <div className="PickGame">
+      <label htmlFor="gameId">Game</label>
       <input
         type="text"
         id="gameId"
@@ -25,6 +26,7 @@ export const PickGame = ({ setGameLogin }) => {
         onChange={onGameIdChange}
         onKeyPress={onKeyPress}
       />
+      <label htmlFor="userId">Username</label>
       <input
         type="text"
         id="userId"
