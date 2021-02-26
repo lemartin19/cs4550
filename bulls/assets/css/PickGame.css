@@ -1,0 +1,8 @@
+.PickGame {
+  padding-top: 25vh;
+}
+
+label {
+  display: inline;
+  padding-left: 4px;
+}
